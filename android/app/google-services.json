@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "950160650466",
+    "project_id": "tallermec-4e33e",
+    "storage_bucket": "tallermec-4e33e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:950160650466:android:283d34a55aeeb5dd2c2ebb",
+        "android_client_info": {
+          "package_name": "com.taller.appmovil"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8Vy4Sy1pwpiOdNhbiv21K8zor4k4FWCk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:950160650466:android:f64cbaff105715ab2c2ebb",
+        "android_client_info": {
+          "package_name": "com.taller.tallermecanico"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8Vy4Sy1pwpiOdNhbiv21K8zor4k4FWCk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
