@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
-import 'screens/dashboard_screen.dart';
+import 'screens/menu_screen.dart';
 import 'screens/recepcion_screen.dart';
 import 'screens/vehiculos_screen.dart';
 import 'screens/mantenimiento_screen.dart';
+import 'screens/register_screen.dart';
 
 class TallerApp extends StatelessWidget {
   const TallerApp({super.key});
@@ -23,7 +24,8 @@ class TallerApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (_) => LoginScreen(),
-        '/dashboard': (_) => DashboardScreen(),
+        '/register': (_) => RegisterScreen(),
+        '/menu': (_) => MenuScreen(),
         '/clientes': (_) => RecepcionScreen(),
         '/vehiculos': (_) => VehiculosScreen(),
         '/mantenimiento': (context) {

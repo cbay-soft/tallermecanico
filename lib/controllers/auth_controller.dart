@@ -13,6 +13,10 @@ class AuthController {
     }
   }
 
+  Future<User?> register(String name, String email, String password) async {
+    // Lógica para registrar el usuario
+  }
+
   Future<void> signOut() async {
     await _auth.signOut();
   }
