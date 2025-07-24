@@ -35,11 +35,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
-                  // Acción para Nuevo pedido: redireccionar a la pantalla de nuevo pedido
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NuevaPantalla()), // Reemplaza 'NuevaPantalla' por el nombre de tu widget destino
-                  );
+                  Navigator.pushNamed(context, '/register'); // Redirige a la pantalla de registro(Cambiar a la pantalla que desees, cambiar el register por otra ruta)
                 },
                 child: const Text('Nuevo pedido'),
               ),
@@ -54,11 +50,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
-                  // Acción para Nuevo pedido: redireccionar a la pantalla de nuevo pedido
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NuevaPantalla()), // Reemplaza 'NuevaPantalla' por el nombre de tu widget destino
-                  );
+                  Navigator.pushNamed(context, '/register'); // Redirige a la pantalla de registro(Cambiar a la pantalla que desees, cambiar el register por otra ruta)
                 },
                 child: const Text('Lista de vehículos'),
               ),
@@ -73,11 +65,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
-                  // Acción para Nuevo pedido: redireccionar a la pantalla de nuevo pedido
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NuevaPantalla()), // Reemplaza 'NuevaPantalla' por el nombre de tu widget destino
-                  );
+                  Navigator.pushNamed(context, '/register'); // Redirige a la pantalla de registro(Cambiar a la pantalla que desees, cambiar el register por otra ruta)
                 },
                 child: const Text('Buscar vehículo'),
               ),
