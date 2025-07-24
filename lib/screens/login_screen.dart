@@ -35,6 +35,7 @@ class LoginScreen extends StatelessWidget {
               controller: emailController,
               decoration: const InputDecoration(
                 labelText: 'Correo',
+                prefixIcon: Icon(Icons.email),
                 filled: true,
                 fillColor: Colors.white70,
               ),
@@ -45,6 +46,7 @@ class LoginScreen extends StatelessWidget {
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: 'Contraseña',
+                prefixIcon: Icon(Icons.password),
                 filled: true,
                 fillColor: Colors.white70,
               ),
