@@ -35,7 +35,11 @@ class _MenuScreenState extends State<MenuScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
-                  // Acción para Nuevo pedido
+                  // Acción para Nuevo pedido: redireccionar a la pantalla de nuevo pedido
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NuevaPantalla()), // Reemplaza 'NuevaPantalla' por el nombre de tu widget destino
+                  );
                 },
                 child: const Text('Nuevo pedido'),
               ),
@@ -50,7 +54,11 @@ class _MenuScreenState extends State<MenuScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
-                  // Acción para Lista de vehículos
+                  // Acción para Nuevo pedido: redireccionar a la pantalla de nuevo pedido
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NuevaPantalla()), // Reemplaza 'NuevaPantalla' por el nombre de tu widget destino
+                  );
                 },
                 child: const Text('Lista de vehículos'),
               ),
@@ -65,7 +73,11 @@ class _MenuScreenState extends State<MenuScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
-                  // Acción para Buscar vehículo
+                  // Acción para Nuevo pedido: redireccionar a la pantalla de nuevo pedido
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NuevaPantalla()), // Reemplaza 'NuevaPantalla' por el nombre de tu widget destino
+                  );
                 },
                 child: const Text('Buscar vehículo'),
               ),
