@@ -65,7 +65,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/register'); // Redirige a la pantalla de registro(Cambiar a la pantalla que desees, cambiar el register por otra ruta)
+                  Navigator.pushNamed(context, '/busqueda'); // Redirige a la pantalla de registro(Cambiar a la pantalla que desees, cambiar el register por otra ruta)
                 },
                 child: const Text('Buscar vehículo'),
               ),
