@@ -15,76 +15,131 @@ class _BusquedaScreenState extends State<BusquedaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Búsqueda de vehículos'),
-        leading: const Icon(Icons.menu),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        leading: const BackButton(color: Colors.white),
+        title: const Text(
+          'Búsqueda de Vehículos',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blue,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF89CFF0), Color(0xFF4682B4)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 10),
-            const Text('Nombre del cliente'),
-            const SizedBox(height: 5),
-            TextField(
-              controller: _nombreController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Campo de texto',
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text('Placa del carro'),
-            const SizedBox(height: 5),
-            TextField(
-              controller: _placaController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Campo de texto',
-              ),
-            ),
-            const SizedBox(height: 30),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Acción al presionar "Buscar"
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Nombre del Cliente',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildTextField('Ingrese el nombre completo', _nombreController),
+
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Placa del Carro',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildTextField('Ingrese la placa del vehículo', _placaController),
+
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size.fromHeight(50),
+                        ),
+                        child: const Text('Buscar'),
+                      ),
+                    ),
+                  ],
                 ),
-                child: const Text('Buscar'),
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          height: 80,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              const Text("Logo", style: TextStyle(fontWeight: FontWeight.bold)),
-              _buildBottomIcon(Icons.add_circle_outline, "Nuevo"),
-              _buildBottomIcon(Icons.list, "Listar"),
-              _buildBottomIcon(Icons.search, "Buscar"),
-            ],
-          ),
+      bottomNavigationBar: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Image.asset(
+              'assets/images/logoTaller.png',
+              width: 50,
+              height: 50,
+            ),
+            _bottomButton(Icons.add_circle_outline, 'Nuevo', () {
+              Navigator.pushNamed(context, '/pedido');
+            }),
+            _bottomButton(Icons.list_alt, 'Listar', () {
+              Navigator.pushNamed(context, '/vehiculos_ingresados');
+            }),
+            _bottomButton(Icons.search, 'Buscar', () {
+              
+            }),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildBottomIcon(IconData icon, String label) {
+  Widget _buildTextField(String hint, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hint,
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+  }
+
+  Widget _bottomButton(IconData icon, String label, VoidCallback onPressed) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon),
+        InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 24),
+          ),
+        ),
+        const SizedBox(height: 4),
         Text(label),
       ],
     );

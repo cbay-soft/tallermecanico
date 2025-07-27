@@ -3,211 +3,181 @@ import 'package:flutter/material.dart';
 class VehiculosIngresadosScreen extends StatelessWidget {
   const VehiculosIngresadosScreen({super.key});
 
-  // Paleta de colores
-  static const Color primaryBlue = Color(0xFF1565C0);
-  static const Color lightBlue = Color(0xFF42A5F5);
-  static const Color darkBlue = Color(0xFF0D47A1);
-  static const Color backgroundColor = Color(0xFFF5F7FA);
-  static const Color cardColor = Color(0xFFFFFFFF);
-  static const Color accentGreen = Color(0xFF4CAF50);
-  static const Color warningOrange = Color(0xFFFF7043);
-  static const Color deleteRed = Color(0xFFE53935);
-  static const Color textPrimary = Color(0xFF212121);
-  static const Color textSecondary = Color(0xFF757575);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
-        leading: BackButton(
-          color: Colors.white,
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: const BackButton(color: Colors.white),
         title: const Text(
-          'Vehículos ingresados',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-            color: Colors.white,
+          'Vehículos Ingresados',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blue,
+        elevation: 0,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF89CFF0), Color(0xFF4682B4)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
-        centerTitle: true,
-        backgroundColor: primaryBlue,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [primaryBlue, darkBlue],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Barra de búsqueda
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Buscar por nombre, placa o marca',
+                      prefixIcon: Icon(Icons.search, color: Colors.grey),
+                      border: InputBorder.none,
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Lista de vehículos
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(20),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Estado y número
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.withAlpha(25),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Text(
+                                    'Activo',
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  '#${(index + 1).toString().padLeft(3, '0')}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+
+                            // Info vehículo
+                            _infoRow(Icons.confirmation_number_outlined,
+                                'Placa: PCE-0923'),
+                            _infoRow(Icons.calendar_today_outlined,
+                                'Ingreso: 02/07/2025'),
+                            _infoRow(Icons.directions_car_outlined,
+                                'Toyota Hilux 2020'),
+                            _infoRow(Icons.person_outline,
+                                'Cliente: Carlos Ramírez'),
+                            const SizedBox(height: 12),
+
+                            // Botones
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _actionIcon(Icons.folder_open_outlined,
+                                    Colors.lightBlue, () {}),
+                                _actionIcon(Icons.visibility_outlined,
+                                    Colors.blue, () {}),
+                                _actionIcon(Icons.build_outlined,
+                                    Colors.orange, () {}),
+                                _actionIcon(Icons.delete_outline, Colors.red,
+                                    () {}),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
-      body: Column(
-        children: [
-          // Barra de búsqueda
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [primaryBlue, darkBlue],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: const TextField(
-                decoration: InputDecoration(
-                  hintText: 'Buscar por nombre, placa o marca',
-                  hintStyle: TextStyle(color: textSecondary),
-                  prefixIcon: Icon(Icons.search, color: primaryBlue, size: 22),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                ),
-              ),
-            ),
-          ),
-          
-          // Lista de vehículos
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: cardColor,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Header
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: accentGreen.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: accentGreen.withValues(alpha: 0.3)),
-                              ),
-                              child: const Text(
-                                'Activo',
-                                style: TextStyle(
-                                  color: accentGreen,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                            Text(
-                              '#${(index + 1).toString().padLeft(3, '0')}',
-                              style: const TextStyle(
-                                color: textSecondary,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                        
-                        const SizedBox(height: 16),
-                        
-                        // Información del vehículo
-                        rowInfo(Icons.confirmation_number_outlined, 'Placa: PCE-0923', primaryBlue),
-                        const SizedBox(height: 8),
-                        rowInfo(Icons.calendar_today_outlined, 'Ingreso: 02/07/2025', textSecondary),
-                        const SizedBox(height: 8),
-                        rowInfo(Icons.directions_car_outlined, 'Toyota Hilux 2020', textPrimary),
-                        const SizedBox(height: 8),
-                        rowInfo(Icons.person_outline, 'Cliente: Carlos Ramírez', textPrimary),
-                        
-                        const SizedBox(height: 20),
-                        
-                        // Botones de acción
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            iconButton(Icons.folder_open_outlined, lightBlue, 'Ver'),
-                            iconButton(Icons.visibility_outlined, primaryBlue, 'Detalles'),
-                            iconButton(Icons.build_outlined, warningOrange, 'Editar'),
-                            iconButton(Icons.delete_outline, deleteRed, 'Eliminar'),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
 
-          // Barra inferior
-          Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-            decoration: BoxDecoration(
-              color: cardColor,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 15,
-                  offset: const Offset(0, -3),
-                ),
-              ],
+      // Footer
+      bottomNavigationBar: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Image.asset(
+              'assets/images/logoTaller.png',
+              width: 50,
+              height: 50,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                // Logo
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: primaryBlue.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Image.asset(
-                    'assets/images/logoTaller.png',
-                    width: 32,
-                    height: 32,
-                  ),
-                ),
-                _bottomButton(Icons.add_circle_outline, 'Nuevo', accentGreen, () {
-                  // Acción para Nuevo
-                }),
-                _bottomButton(Icons.list_alt_outlined, 'Listar', primaryBlue, () {
-                  // Acción para Listar
-                }),
-                _bottomButton(Icons.search_outlined, 'Buscar', warningOrange, () {
-                  // Acción para Buscar
-                }),
-              ],
+            _bottomButton(Icons.add_circle_outline, 'Nuevo', () {
+              Navigator.pushNamed(context, '/pedido');
+            }),
+            _bottomButton(Icons.list_alt, 'Listar', () {
+              
+            }),
+            _bottomButton(Icons.search, 'Buscar', () {
+              Navigator.pushNamed(context, '/busqueda');
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _infoRow(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: Colors.blue.shade800),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                color: Colors.black87,
+                fontSize: 14,
+              ),
             ),
           ),
         ],
@@ -215,79 +185,40 @@ class VehiculosIngresadosScreen extends StatelessWidget {
     );
   }
 
-  Widget rowInfo(IconData icon, String text, Color iconColor) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: iconColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, size: 16, color: iconColor),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 14,
-              color: textPrimary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget iconButton(IconData icon, Color color, String tooltip) {
-    return Tooltip(
-      message: tooltip,
+  Widget _actionIcon(IconData icon, Color color, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
+          color: color.withAlpha(25),
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: InkWell(
-          onTap: () {
-            // Acción del botón
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Icon(icon, color: color, size: 20),
-        ),
+        child: Icon(icon, color: color),
       ),
     );
   }
 
-  Widget _bottomButton(IconData icon, String label, Color color, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: color, size: 22),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                color: color,
-                fontWeight: FontWeight.w500,
-              ),
+  Widget _bottomButton(IconData icon, String label, VoidCallback onPressed) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(8),
             ),
-          ],
+            child: Icon(icon, size: 24),
+          ),
         ),
-      ),
+        const SizedBox(height: 4),
+        Text(label),
+      ],
     );
   }
 }
