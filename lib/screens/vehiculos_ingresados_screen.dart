@@ -116,8 +116,9 @@ class VehiculosIngresadosScreen extends StatelessWidget {
                               children: [
                                 _actionIcon(Icons.folder_open_outlined,
                                     Colors.lightBlue, () {}),
-                                _actionIcon(Icons.visibility_outlined,
-                                    Colors.blue, () {}),
+                                _actionIcon(Icons.visibility_outlined, Colors.blue, () {
+                                  Navigator.pushNamed(context, '/detallevehiculo');
+                                }),
                                 _actionIcon(Icons.build_outlined,
                                     Colors.orange, () {}),
                                 _actionIcon(Icons.delete_outline, Colors.red,
