@@ -115,12 +115,16 @@ class VehiculosIngresadosScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 _actionIcon(Icons.folder_open_outlined,
-                                    Colors.lightBlue, () {}),
+                                     Colors.blue, () {
+                                  Navigator.pushNamed(context, '/informe_final');
+                                }),
                                 _actionIcon(Icons.visibility_outlined, Colors.blue, () {
                                   Navigator.pushNamed(context, '/detallevehiculo');
                                 }),
                                 _actionIcon(Icons.build_outlined,
-                                    Colors.orange, () {}),
+                                    Colors.blue, () {
+                                  Navigator.pushNamed(context, '/orden');
+                                }),
                                 _actionIcon(Icons.delete_outline, Colors.red,
                                     () {}),
                               ],

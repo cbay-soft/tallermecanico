@@ -9,6 +9,8 @@ import 'screens/pedido_screen.dart';
 import 'screens/vehiculos_ingresados_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/busqueda_screen.dart';
+import 'screens/orden.dart'; 
+import 'screens/informe_final.dart';
 
 class TallerApp extends StatelessWidget {
   const TallerApp({super.key});
@@ -36,6 +38,8 @@ class TallerApp extends StatelessWidget {
         '/vehiculos': (_) => VehiculosScreen(),
         '/busqueda': (_) => BusquedaScreen(),
         '/detallevehiculo': (_) => DetallesvehiculoScreen(),
+        '/orden': (_)=> OrdenTrabajoScreen(),
+        '/informe_final': (_) =>ResumenTrabajoScreen(),
         '/mantenimiento': (context) {
           final vehiculoId = ModalRoute.of(context)!.settings.arguments as String;
           return MantenimientoScreen(vehiculoId: vehiculoId);

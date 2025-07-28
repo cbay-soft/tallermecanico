@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class DetallesvehiculoScreen extends StatefulWidget {
   const DetallesvehiculoScreen({super.key});
 
@@ -8,7 +9,6 @@ class DetallesvehiculoScreen extends StatefulWidget {
 }
 
 class _DetallesvehiculoScreenState extends State<DetallesvehiculoScreen> {
-  // Definimos las variables para manejar el estado de los checkboxes
   bool _cambioAceite = false;
   bool _cambioBanda = false;
   bool _cambioBujias = false;
@@ -20,90 +20,87 @@ class _DetallesvehiculoScreenState extends State<DetallesvehiculoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalles del vehículo'),
+        leading: const BackButton(color: Colors.white),
+        title: const Text(
+          'Detalles del vehículo',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.blue,
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Datos del cliente
-              Text('Datos del cliente', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              _buildTextField('Nombre Completo'),
-              _buildTextField('Cedula o RUC'),
-              _buildTextField('Teléfono'),
-              _buildTextField('Correo electrónico'),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF89CFF0), Color(0xFF4682B4)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSectionTitle('Datos del cliente'),
+                _buildTextField('Nombre completo'),
+                _buildTextField('Cédula o RUC'),
+                _buildTextField('Teléfono'),
+                _buildTextField('Correo electrónico'),
+                const SizedBox(height: 20),
 
-              SizedBox(height: 20),
+                _buildSectionTitle('Datos del vehículo'),
+                _buildTextField('Marca'),
+                _buildTextField('Año'),
+                _buildTextField('Kilometraje actual'),
+                _buildTextField('Fecha de ingreso'),
+                const SizedBox(height: 20),
 
-              // Datos del vehículo
-              Text('Datos del vehículo', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              _buildTextField('Marca'),
-              _buildTextField('Año'),
-              _buildTextField('Kilometraje actual'),
-              _buildTextField('Fecha de ingreso'),
+                _buildSectionTitle('Guía de mantenimiento'),
+                _buildCheckbox('Cambio de aceite', _cambioAceite, (val) {
+                  setState(() => _cambioAceite = val!);
+                }),
+                _buildCheckbox('Cambio de banda', _cambioBanda, (val) {
+                  setState(() => _cambioBanda = val!);
+                }),
+                _buildCheckbox('Cambio de bujías', _cambioBujias, (val) {
+                  setState(() => _cambioBujias = val!);
+                }),
+                _buildCheckbox('Ajuste de la sincronización del motor', _ajusteSincronizacion, (val) {
+                  setState(() => _ajusteSincronizacion = val!);
+                }),
+                _buildCheckbox('Revisión del sistema de inyección de combustible', _revisionInyeccion, (val) {
+                  setState(() => _revisionInyeccion = val!);
+                }),
+                _buildCheckbox('Limpieza de inyectores', _limpiezaInyectores, (val) {
+                  setState(() => _limpiezaInyectores = val!);
+                }),
+                const SizedBox(height: 20),
 
-              SizedBox(height: 20),
+                _buildSectionTitle('Descripción del problema'),
+                _buildTextField('Describe el problema aquí', maxLines: 5),
+                const SizedBox(height: 20),
 
-              // Guía de mantenimiento
-              Text('Guía de mantenimiento', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              _buildCheckbox('Cambio de aceite', _cambioAceite, (newValue) {
-                setState(() {
-                  _cambioAceite = newValue!;
-                });
-              }),
-              _buildCheckbox('Cambio de banda', _cambioBanda, (newValue) {
-                setState(() {
-                  _cambioBanda = newValue!;
-                });
-              }),
-              _buildCheckbox('Cambio de bujías', _cambioBujias, (newValue) {
-                setState(() {
-                  _cambioBujias = newValue!;
-                });
-              }),
-              _buildCheckbox('Ajuste de la sincronización del motor', _ajusteSincronizacion, (newValue) {
-                setState(() {
-                  _ajusteSincronizacion = newValue!;
-                });
-              }),
-              _buildCheckbox('Revisión del sistema de inyección de combustible', _revisionInyeccion, (newValue) {
-                setState(() {
-                  _revisionInyeccion = newValue!;
-                });
-              }),
-              _buildCheckbox('Limpieza de inyectores', _limpiezaInyectores, (newValue) {
-                setState(() {
-                  _limpiezaInyectores = newValue!;
-                });
-              }),
+                _buildSectionTitle('Fotos del vehículo'),
+                _buildImagePicker(),
+                const SizedBox(height: 30),
 
-              SizedBox(height: 20),
-
-              // Descripción del problema
-              Text('Descripción del problema', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              _buildTextField('Describe el problema aquí', maxLines: 5),
-
-              SizedBox(height: 20),
-
-              // Fotos del vehículo
-              Text('Fotos del vehículo', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              _buildImagePicker(),
-
-              SizedBox(height: 20),
-
-              // Botón de envío o acción
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Acción al presionar el botón
-                  },
-                  child: const Text('Guardar'),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(50),
+                    ),
+                    onPressed: () {
+                      // Acción al presionar el botón
+                    },
+                    child: const Text('Guardar'),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -112,40 +109,70 @@ class _DetallesvehiculoScreenState extends State<DetallesvehiculoScreen> {
 
   Widget _buildTextField(String label, {int maxLines = 1}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 10),
       child: TextField(
         maxLines: maxLines,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
     );
   }
 
   Widget _buildCheckbox(String label, bool value, Function(bool?) onChanged) {
-    return Row(
-      children: [
-        Checkbox(value: value, onChanged: onChanged),
-        Expanded(child: Text(label)),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Checkbox(
+            value: value,
+            onChanged: onChanged,
+            checkColor: Colors.white,
+            activeColor: Colors.green,
+          ),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
     );
   }
 
   Widget _buildImagePicker() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: List.generate(4, (index) {
-        return GestureDetector(
-          onTap: () {
-            // Implement photo picker logic here
-          },
-          child: Container(
-            width: 60,
-            height: 60,
-            color: Colors.grey[200],
-            child: Icon(Icons.add_a_photo, color: Colors.blue),
-          ),
+        return Column(
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: Colors.white24,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.image, size: 40, color: Colors.white),
+            ),
+            const SizedBox(height: 4),
+            Text('Foto ${index + 1}', style: const TextStyle(color: Colors.white)),
+          ],
         );
       }),
     );
