@@ -11,14 +11,26 @@ class RecepcionController extends ChangeNotifier {
   final telefonoController = TextEditingController();
 
   final placaController = TextEditingController();
+  final anioController = TextEditingController();
   final marcaController = TextEditingController();
   final modeloController = TextEditingController();
 
   final FirebaseService servicio = FirebaseService();
-  
+
+    // ✅ AGREGAR esta nueva variable
+  bool _seHaBuscado = false;
+  bool get seHaBuscado => _seHaBuscado;
 
   bool buscando = false;
   bool mostrarFormularioVehiculo = false;
+
+  // ✅ Nueva propiedad para controlar cuándo ocultar teclado
+  bool _debeOcultarTeclado = false;
+  bool get debeOcultarTeclado => _debeOcultarTeclado;
+
+  // ✅ Agregar variable para controlar modales
+  bool _modalAbierto = false;
+  bool get modalAbierto => _modalAbierto;
 
   Cliente? clienteEncontrado;
   List<Vehiculo> vehiculosCliente = [];
@@ -28,6 +40,7 @@ class RecepcionController extends ChangeNotifier {
     buscando = true;
     mostrarFormularioVehiculo = false;
     vehiculosCliente.clear();
+    _seHaBuscado = true; // Marcar que se ha buscado
     notifyListeners();
 
     final cliente = await servicio.buscarClientePorCedula(
@@ -36,9 +49,10 @@ class RecepcionController extends ChangeNotifier {
     clienteEncontrado = cliente;
 
     if (cliente != null) {
-      nombreController.text = cliente.nombre;
+      nombreController.text = cliente.nombre.toUpperCase();
       telefonoController.text = cliente.telefono;
       correoController.text = cliente.correo;
+      _debeOcultarTeclado = true; // Ocultar teclado si se encuentra el cliente
       await cargarVehiculos();
     } else {
       nombreController.clear();
@@ -47,6 +61,31 @@ class RecepcionController extends ChangeNotifier {
     }
 
     buscando = false;
+    notifyListeners();
+  }
+  
+  // ✅ AGREGAR método para reset cuando se cambia la cédula
+  void resetearBusqueda() {
+    _seHaBuscado = false;
+    clienteEncontrado = null;
+    vehiculosCliente.clear();
+    notifyListeners();
+  }
+
+  // Método para confirmar que el teclado fue ocultado
+  void tecladoOcultado() {
+    _debeOcultarTeclado = false;
+  }
+
+  // Método para confirmar si el modal está abierto
+  void setModalAbierto(bool abierto) {
+    _modalAbierto = abierto;
+
+    if (!abierto) {
+      // Si el modal se cierra, ocultar teclado
+      _debeOcultarTeclado = true;
+    }
+
     notifyListeners();
   }
 
@@ -72,20 +111,29 @@ class RecepcionController extends ChangeNotifier {
     await buscarCliente();
   }
 
-  Future<void> guardarVehiculo() async {
+  Future<void> guardarVehiculo(
+    BuildContext context,
+    TextEditingController marcaController,
+    TextEditingController modeloController,
+    TextEditingController anioController,
+    TextEditingController placaController,
+  ) async {
     if (clienteEncontrado == null) return;
 
     final nuevo = Vehiculo(
       id: '',
       clienteId: clienteEncontrado!.id,
+      nombreCliente: clienteEncontrado!.nombre,
       placa: placaController.text.trim(),
       marca: marcaController.text.trim(),
       modelo: modeloController.text.trim(),
-      estado: 'pendiente',
+      anio: anioController.text.trim(),
+      estado: 'ingresado',
     );
     await servicio.registrarVehiculo(nuevo);
     placaController.clear();
     marcaController.clear();
+    anioController.clear();
     modeloController.clear();
     await cargarVehiculos();
   }

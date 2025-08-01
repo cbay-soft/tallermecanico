@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import '../controllers/recepcion_controller.dart';
 import '../widgets/custom_widgets.dart';
 
-class NuevoClienteScreen extends StatelessWidget {
-  const NuevoClienteScreen({super.key});
+class NuevoMantenimientoScreen extends StatelessWidget {
+  const NuevoMantenimientoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,22 +45,10 @@ class NuevoClienteScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      CustomWidgets.buildTextField(
-                        'Nombre completo',
-                        controller: controller.nombreController,
-                      ),
-                      CustomWidgets.buildTextField(
-                        'Cédula o RUC',
-                        controller: controller.cedulaController,
-                      ),
-                      CustomWidgets.buildTextField(
-                        'Teléfono',
-                        controller: controller.telefonoController,
-                      ),
-                      CustomWidgets.buildTextField(
-                        'Correo electrónico',
-                        controller: controller.correoController,
-                      ),
+                      CustomWidgets.buildTextField('Nombre completo', controller: controller.nombreController),
+                      CustomWidgets.buildTextField('Cédula o RUC', controller: controller.cedulaController),
+                      CustomWidgets.buildTextField('Teléfono', controller: controller.telefonoController),
+                      CustomWidgets.buildTextField('Correo electrónico', controller: controller.correoController),
                       const SizedBox(height: 20),
                       const Text(
                         'Datos del Vehículo',
@@ -81,6 +69,8 @@ class NuevoClienteScreen extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
+                      const SizedBox(height: 10),
+                      CustomWidgets.buildMultilineTextField('Escriba el problema...'),
                       const SizedBox(height: 20),
 
                       const Text(
@@ -131,11 +121,7 @@ class NuevoClienteScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Image.asset(
-                    'assets/images/logoTaller.png',
-                    width: 50,
-                    height: 50,
-                  ),
+                  Image.asset('assets/images/logoTaller.png', width: 50, height: 50),
                   _bottomButton(Icons.add_circle_outline, 'Nuevo', () {
                     Navigator.pushNamed(context, '/pedido');
                   }),
@@ -152,6 +138,7 @@ class NuevoClienteScreen extends StatelessWidget {
         },
       ),
     );
+    
   }
 
   static Widget _imagePlaceholder(String label) {

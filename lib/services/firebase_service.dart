@@ -5,7 +5,7 @@ import '../models/vehiculo_model.dart';
 class FirebaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  FirebaseFirestore get firestore => _db; // 👈🏻 ESTO FALTABA
+  FirebaseFirestore get firestore => _db;
 
   Future<void> registrarVehiculo(Vehiculo vehiculo) async {
     await _db.collection('vehiculos').add(vehiculo.toMap());

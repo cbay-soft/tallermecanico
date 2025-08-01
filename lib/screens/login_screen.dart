@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../controllers/auth_controller.dart';
+import '../constants/app_colors.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -11,7 +12,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Fondo blanco
+      backgroundColor: AppColors.fondoPrincipalClaro, // Fondo blanco
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 30),
         child: Column(
@@ -54,7 +55,7 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green, // Botón verde
+                backgroundColor: AppColors.fondoPrincipalOscuro, // Botón Gris
                 foregroundColor: Colors.white, // Texto blanco
                 minimumSize: const Size(double.infinity, 45),
               ),
@@ -80,7 +81,7 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green, // Botón verde
+                backgroundColor: AppColors.fondoPrincipalOscuro, // Botón Gris
                 foregroundColor: Colors.white, // Texto blanco
                 minimumSize: const Size(double.infinity, 45),
               ),
