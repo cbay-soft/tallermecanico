@@ -7,6 +7,7 @@ class Vehiculo {
   final String modelo;
   final String anio;
   final String estado;
+  final String kilometraje;
 
   Vehiculo({
     required this.id,
@@ -16,6 +17,7 @@ class Vehiculo {
     required this.marca,
     required this.modelo,
     required this.anio,
+    required this.kilometraje,
     required this.estado,
   });
 
@@ -28,6 +30,7 @@ class Vehiculo {
       marca: data['marca'] ?? '',
       modelo: data['modelo'] ?? '',
       anio: data['anio'] ?? '',
+      kilometraje: data['kilometraje'] ?? '',
       estado: data['estado'] ?? 'ingresado',
     );
   }
@@ -40,6 +43,7 @@ class Vehiculo {
       'marca': marca,
       'modelo': modelo,
       'anio': anio,
+      'kilometraje': kilometraje,
       'estado': estado,
     };
   }

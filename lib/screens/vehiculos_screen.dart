@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controllers/vehiculos_controller.dart';
 import '../constants/app_colors.dart';
+import '../constants/estados_vehiculo.dart';
+import '../screens/expediente_screen.dart';
+import '../screens/detalle_vehiculo_screen.dart';
 
 enum TaskStatus { all, pending, completed }
 
@@ -59,14 +62,13 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
-                        flex: 2,
+                        flex: 1,
                         child: Align(
                           alignment: Alignment.topRight,
-                          child: Image.asset(
-                            'assets/images/clienteLogo2.png',
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.contain,
+                          child: const Icon(
+                            Icons.directions_car_filled_outlined,
+                            color: AppColors.iconoPrincipal,
+                            size: 40,
                           ),
                         ),
                       ),
@@ -83,7 +85,8 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                               ),
                               textAlign: TextAlign.left,
                               controller: _busquedaController,
-                              decoration: InputDecoration( // ✅ QUITAR const
+                              decoration: InputDecoration(
+                                // ✅ QUITAR const
                                 filled: true,
                                 labelText: 'Buscar por placa o cliente',
                                 contentPadding: const EdgeInsets.symmetric(
@@ -101,7 +104,10 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                                 // ✅ CORREGIR: Hacer dinámico el suffixIcon
                                 suffixIcon: _busquedaController.text.isNotEmpty
                                     ? IconButton(
-                                        icon: const Icon(Icons.clear, color: AppColors.textoAzul),
+                                        icon: const Icon(
+                                          Icons.clear,
+                                          color: AppColors.textoAzul,
+                                        ),
                                         onPressed: () {
                                           _busquedaController.clear();
                                           controller.limpiarFiltros();
@@ -127,15 +133,17 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                             color: AppColors.iconoPrincipal,
                           ),
                           onPressed: () {
-                            controller.filtrarVehiculos(_busquedaController.text);
+                            controller.filtrarVehiculos(
+                              _busquedaController.text,
+                            );
                           },
                         ),
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // ✅ SegmentedButton
                   SegmentedButton<TaskStatus>(
                     segments: const <ButtonSegment<TaskStatus>>[
@@ -163,9 +171,9 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                       });
                     },
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // ✅ Estado actual
                   Text(
                     'Mostrando: ${_getEstadoTexto(selection.first)} (${_getConteo(controller, selection.first)})',
@@ -175,9 +183,9 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 10),
-                  
+
                   // ✅ Lista de vehículos
                   Expanded(
                     child: controller.cargando
@@ -212,7 +220,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     }
   }
 
-  // ✅ Obtener texto del estado
+  // Obtener texto del estado
   String _getEstadoTexto(TaskStatus estado) {
     switch (estado) {
       case TaskStatus.all:
@@ -224,7 +232,6 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     }
   }
 
-  // ✅ CORREGIR: Una sola función _getConteo
   int _getConteo(VehiculosController controller, TaskStatus estado) {
     switch (estado) {
       case TaskStatus.all:
@@ -236,10 +243,10 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     }
   }
 
-  // ✅ Construir lista de vehículos
+  // Construir lista de vehículos
   Widget _buildListaVehiculos(VehiculosController controller) {
     final vehiculos = controller.vehiculosActuales;
-    
+
     if (vehiculos.isEmpty) {
       return Center(
         child: Column(
@@ -277,7 +284,9 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
               leading: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: _getColorEstado(vehiculo.estado).withValues(alpha: 0.5),
+                  color: _getColorEstado(
+                    vehiculo.estado,
+                  ).withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Icon(
@@ -285,14 +294,13 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                   color: AppColors.iconoPrincipal,
                 ),
               ),
-              title:
-                Text(
-                  '${vehiculo.nombreCliente.toUpperCase()} ',
-                  style: TextStyle(
-                    color: AppColors.textoTitulo,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ), 
+              title: Text(
+                '${vehiculo.nombreCliente.toUpperCase()} ',
+                style: TextStyle(
+                  color: AppColors.textoTitulo,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -308,8 +316,8 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                     style: TextStyle(
                       color: _getColorEstado(vehiculo.estado),
                       fontWeight: FontWeight.w600,
-                    ),  
-                  ),      
+                    ),
+                  ),
                 ],
               ),
               trailing: const Icon(
@@ -327,19 +335,9 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     );
   }
 
-  // ✅ AGREGAR: Método _getColorEstado que faltaba
+  // Método _getColorEstado
   Color _getColorEstado(String estado) {
-    switch (estado.toLowerCase()) {
-      case 'pendiente':
-        return AppColors.advertencia;
-      case 'en_proceso':
-        return AppColors.iconoPrincipal;
-      case 'realizado':
-      case 'completado':
-        return AppColors.exito;
-      default:
-        return AppColors.textoEtiqueta;
-    }
+    return EstadosVehiculo.obtenerColorEstado(estado);
   }
 
   void _mostrarDetallesVehiculo(BuildContext context, dynamic vehiculo) {
@@ -364,13 +362,13 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppColors.fondoPrincipalClaro,
-                        AppColors.fondoPrincipalOscuro,
-                      ],
-                    ),
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.fondoPrincipalClaro,
+                    AppColors.fondoPrincipalOscuro,
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(24),
               ),
               padding: const EdgeInsets.all(20),
@@ -381,9 +379,14 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
-                          color: _getColorEstado(vehiculo.estado).withValues(alpha: 0.2),
+                          color: _getColorEstado(
+                            vehiculo.estado,
+                          ).withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -406,31 +409,33 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
-                  // ✅ Información del vehículo con íconos
-                  _detalleRow(vehiculo.nombreCliente.toUpperCase(), icon: Icons.person_outline),
-                  _detalleRow('${vehiculo.marca.toUpperCase()} ${vehiculo.modelo.toUpperCase()} ${vehiculo.anio}', icon: Icons.directions_car_outlined),
-                  _detalleRow(vehiculo.placa.toUpperCase(), icon: Icons.confirmation_number_outlined),
-                  _detalleRow(vehiculo.anio.toString(), icon: Icons.calendar_today_outlined),
-                                    
+
+                  // Información del vehículo con íconos
+                  _detalleRow(
+                    vehiculo.nombreCliente.toUpperCase(),
+                    icon: Icons.person_outline,
+                  ),
+                  _detalleRow(
+                    '${vehiculo.marca.toUpperCase()} ${vehiculo.modelo.toUpperCase()} ${vehiculo.anio}',
+                    icon: Icons.directions_car_outlined,
+                  ),
+                  _detalleRow(
+                    vehiculo.placa.toUpperCase(),
+                    icon: Icons.confirmation_number_outlined,
+                  ),
+                  _detalleRow(
+                    vehiculo.anio.toString(),
+                    icon: Icons.calendar_today_outlined,
+                  ),
+
                   const SizedBox(height: 24),
-                  
-                  // ✅ Botones de acción en la parte inferior
+
+                  // Botones de acción en la parte inferior
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _actionButton(
-                        Icons.folder_open_outlined,
-                        'Expediente',
-                        AppColors.iconoPrincipal,
-                        () {
-                          Navigator.pop(context);
-                          _abrirExpediente(context, vehiculo);
-                        },
-                      ),
-                      
                       _actionButton(
                         Icons.visibility_outlined,
                         'Ver más',
@@ -440,7 +445,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                           _verDetalleCompleto(context, vehiculo);
                         },
                       ),
-                      
+
                       _actionButton(
                         Icons.build_outlined,
                         'Historial',
@@ -450,21 +455,11 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                           _verHistorialMantenimiento(context, vehiculo);
                         },
                       ),
-                      
-                      _actionButton(
-                        Icons.photo_camera_outlined,
-                        'Fotos',
-                        AppColors.exito,
-                        () {
-                          Navigator.pop(context);
-                          _verFotosVehiculo(context, vehiculo);
-                        },
-                      ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // ✅ Botón cerrar
                   SizedBox(
                     width: double.infinity,
@@ -495,16 +490,12 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
   // Widget para detalles con ícono (versión simple)
   Widget _detalleRow(String value, {IconData? icon}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),  
+      padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (icon != null) ...[
-            Icon(
-              icon,
-              size: 20,
-              color: AppColors.iconoPrincipal,
-            ),
+            Icon(icon, size: 20, color: AppColors.iconoPrincipal),
             const SizedBox(width: 25),
           ],
           Expanded(
@@ -523,7 +514,12 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
   }
 
   // Widget para botones de acción
-  Widget _actionButton(IconData icon, String label, Color color, VoidCallback onTap) {
+  Widget _actionButton(
+    IconData icon,
+    String label,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -540,11 +536,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                 width: 1,
               ),
             ),
-            child: Icon(
-              icon,
-              color: color,
-              size: 24,
-            ),
+            child: Icon(icon, color: color, size: 24),
           ),
         ),
         const SizedBox(height: 6),
@@ -560,34 +552,13 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     );
   }
 
-  // ✅ NUEVO: Método para formatear fecha
+  // Método para formatear fecha
   String _formatearFecha(DateTime fecha) {
     return '${fecha.day.toString().padLeft(2, '0')}/${fecha.month.toString().padLeft(2, '0')}/${fecha.year}';
   }
 
-  // ✅ NUEVO: Funciones para las acciones de los botones
-  void _abrirExpediente(BuildContext context, dynamic vehiculo) {
-    // TODO: Navegar al expediente completo del vehículo
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Abriendo expediente de ${vehiculo.placa}'),
-        backgroundColor: AppColors.iconoPrincipal,
-      ),
-    );
-  }
-
-  void _verDetalleCompleto(BuildContext context, dynamic vehiculo) {
-    // TODO: Navegar a vista detallada completa
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Ver detalles completos de ${vehiculo.placa}'),
-        backgroundColor: AppColors.iconoSecundario,
-      ),
-    );
-  }
-
   void _verHistorialMantenimiento(BuildContext context, dynamic vehiculo) {
-    // TODO: Navegar al historial de mantenimientos
+    // Navega al historial de mantenimientos
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Historial de mantenimientos de ${vehiculo.placa}'),
@@ -597,11 +568,33 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
   }
 
   void _verFotosVehiculo(BuildContext context, dynamic vehiculo) {
-    // TODO: Navegar a galería de fotos del vehículo
+    // Navega a galería de fotos del vehículo
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Fotos del vehículo ${vehiculo.placa}'),
         backgroundColor: AppColors.exito,
+      ),
+    );
+  }
+
+  // Funciones para las acciones de los botones
+  void _abrirExpediente(BuildContext context, dynamic vehiculo) {
+    // ✅ CAMBIAR: Navegar al expediente en lugar de SnackBar
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExpedienteScreen(vehiculoId: vehiculo.id),
+      ),
+    );
+  }
+
+  void _verDetalleCompleto(BuildContext context, dynamic vehiculo) {
+    // ✅ CAMBIAR: Navegar al detalle en lugar de SnackBar
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            DetalleVehiculoScreen(vehiculo: vehiculo, mantenimientoId: null),
       ),
     );
   }

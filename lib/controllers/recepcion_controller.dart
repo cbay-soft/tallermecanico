@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/cliente_model.dart';
 import '../models/vehiculo_model.dart';
 import '../services/firebase_service.dart';
+import '../constants/estados_vehiculo.dart';
 
 class RecepcionController extends ChangeNotifier {
   // 👈 OBLIGATORIO extender ChangeNotifier
@@ -9,7 +10,7 @@ class RecepcionController extends ChangeNotifier {
   final nombreController = TextEditingController();
   final correoController = TextEditingController();
   final telefonoController = TextEditingController();
-
+  final kilometrajeController = TextEditingController();
   final placaController = TextEditingController();
   final anioController = TextEditingController();
   final marcaController = TextEditingController();
@@ -17,7 +18,7 @@ class RecepcionController extends ChangeNotifier {
 
   final FirebaseService servicio = FirebaseService();
 
-    // ✅ AGREGAR esta nueva variable
+  // ✅ AGREGAR esta nueva variable
   bool _seHaBuscado = false;
   bool get seHaBuscado => _seHaBuscado;
 
@@ -63,7 +64,7 @@ class RecepcionController extends ChangeNotifier {
     buscando = false;
     notifyListeners();
   }
-  
+
   // ✅ AGREGAR método para reset cuando se cambia la cédula
   void resetearBusqueda() {
     _seHaBuscado = false;
@@ -117,6 +118,7 @@ class RecepcionController extends ChangeNotifier {
     TextEditingController modeloController,
     TextEditingController anioController,
     TextEditingController placaController,
+    TextEditingController kilometrajeController,
   ) async {
     if (clienteEncontrado == null) return;
 
@@ -128,7 +130,8 @@ class RecepcionController extends ChangeNotifier {
       marca: marcaController.text.trim(),
       modelo: modeloController.text.trim(),
       anio: anioController.text.trim(),
-      estado: 'ingresado',
+      kilometraje: '0', // Asignar un valor por defecto
+      estado: EstadosVehiculo.ingresado,
     );
     await servicio.registrarVehiculo(nuevo);
     placaController.clear();

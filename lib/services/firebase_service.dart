@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/cliente_model.dart';
 import '../models/vehiculo_model.dart';
+import '../constants/estados_vehiculo.dart';
 
 class FirebaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -44,9 +45,41 @@ class FirebaseService {
     await _db.collection('clientes').add(cliente.toMap());
   }
 
-  Future<void> registrarMantenimiento(
+  Future<String> registrarMantenimiento(
     Map<String, dynamic> mantenimiento,
   ) async {
-    await _db.collection('mantenimientos').add(mantenimiento);
+    try {
+      final vehiculoId = mantenimiento['vehiculoId'] as String;
+      
+      // ✅ Guardar mantenimiento
+      final docRef = await _db.collection('mantenimientos').add(mantenimiento);
+      
+      // ✅ Actualizar estado del vehículo usando las constantes
+      String nuevoEstado;
+      switch (mantenimiento['estado']) {
+        case 'pendiente':
+          nuevoEstado = EstadosVehiculo.enMantenimiento;
+          break;
+        case 'en_proceso':
+          nuevoEstado = EstadosVehiculo.enProceso;
+          break;
+        case 'completado':
+          nuevoEstado = EstadosVehiculo.mantenimientoCompletado;
+          break;
+        default:
+          nuevoEstado = EstadosVehiculo.enMantenimiento;
+      }
+      
+      // Actualizar estado del vehículo
+      await _db.collection('vehiculos').doc(vehiculoId).update({
+        'estado': nuevoEstado,
+      });
+      
+      return docRef.id;
+      
+    } catch (e) {
+      print('❌ Error: $e');
+      rethrow;
+    }
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants/app_colors.dart';
 import '../widgets/custom_widgets.dart';
-import '../screens/mantenimiento_screen.dart';
 import '../controllers/recepcion_controller.dart';
 
 class RecepcionScreen extends StatelessWidget {
@@ -208,9 +207,8 @@ class RecepcionScreen extends StatelessWidget {
                                           color: AppColors.iconoPrincipal,
                                           size: 28, // ✅ Tamaño específico
                                         ),
-                                        onPressed: () {
-                                          if (controller.clienteEncontrado !=
-                                              null) {
+                                        onPressed: () {  
+                                          if (controller.clienteEncontrado !=null) {
                                             controller.setModalAbierto(true);
                                             CustomWidgets.mostrarModalAgregarVehiculo(
                                               context,
@@ -316,12 +314,13 @@ class RecepcionScreen extends StatelessWidget {
                                       controller.eliminarVehiculo(v.id),
                                 ),
                                 onTap: () {
-                                  Navigator.push(
+                                  Navigator.pushNamed(
                                     context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          MantenimientoScreen(vehiculoId: v.id),
-                                    ),
+                                    '/mantenimiento',
+                                    arguments: {
+                                      'vehiculoId': v.id,
+                                      'cedulaId': controller.clienteEncontrado!.cedula,
+                                    },
                                   );
                                 },
                               );
@@ -358,12 +357,7 @@ class RecepcionScreen extends StatelessWidget {
                 if (controller.buscando)
                   Positioned.fill(
                     child: Container(
-                      color: Color.fromARGB(
-                        255,
-                        255,
-                        255,
-                        255,
-                      ).withValues(alpha: 0.1),
+                      color: Color.fromARGB(255, 255, 255, 255,).withValues(alpha: 0.1),
                       child: const Center(
                         child: CircularProgressIndicator(
                           color: Color.fromARGB(255, 128, 220, 238),

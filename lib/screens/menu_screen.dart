@@ -44,12 +44,9 @@ class _MenuScreenState extends State<MenuScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/clientes',
-                  ); // Redirige a la pantalla de registro(Cambiar a la pantalla que desees, cambiar el register por otra ruta)
+                  Navigator.pushNamed(context, '/recepcion');
                 },
-                child: const Text('BUSCAR CLIENTE'),
+                child: const Text('NUEVO PEDIDO'),
               ),
             ),
             const SizedBox(height: 20),
@@ -62,12 +59,40 @@ class _MenuScreenState extends State<MenuScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/vehiculos',
-                  ); // Redirige a la pantalla de registro(Cambiar a la pantalla que desees, cambiar el register por otra ruta)
+                  Navigator.pushNamed(context, '/clientes');
+                },
+                child: const Text('CLIENTES'),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: 250,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.fondoPrincipalOscuro, // Botón Gris
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(double.infinity, 50),
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/vehiculos');
                 },
                 child: const Text('VEHICULOS'),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: 250,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Colors.orange, // Color distintivo para mecánico
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(double.infinity, 50),
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/mecanico');
+                },
+                child: const Text('PANEL MECÁNICO'),
               ),
             ),
           ],

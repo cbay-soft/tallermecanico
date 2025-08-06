@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import '../models/vehiculo_model.dart';
 import '../services/firebase_service.dart';
+import '../constants/estados_vehiculo.dart';
 
 class VehiculosController with ChangeNotifier {
   final FirebaseService _firebase = FirebaseService();
 
-  // Listas base (como las tienes)
+  // Listas base
   List<Vehiculo> todos = [];
   List<Vehiculo> ingresados = [];
   List<Vehiculo> pendientes = [];
   List<Vehiculo> realizados = [];
   
-  // Agrega la lista actual que se muestra en la UI
+  // Lista actual que se muestra en la UI
   List<Vehiculo> _vehiculosActuales = [];
   List<Vehiculo> get vehiculosActuales => _vehiculosActuales;
   
-  // Agrega el estado de carga
+  // Estado de carga
   bool _cargando = false;
   bool get cargando => _cargando;
   
-  // Agrega el término de búsqueda actual
+  // Término de búsqueda actual
   String _terminoBusqueda = '';
 
-  // Método actual
   Future<void> cargarVehiculos() async {
     _cargando = true;
     notifyListeners();
@@ -34,11 +34,22 @@ class VehiculosController with ChangeNotifier {
           .toList();
       
       todos = todosVehiculos;
-      ingresados = todosVehiculos.where((v) => v.estado == 'ingresado').toList();
-      pendientes = todosVehiculos.where((v) => v.estado == 'pendiente').toList();
-      realizados = todosVehiculos.where((v) => v.estado == 'realizado').toList();
+      ingresados = todosVehiculos.where((v) => v.estado == EstadosVehiculo.ingresado).toList();
       
-      // Inicializa todos los vehículos
+      // ✅ CORREGIR: Usar las constantes correctas
+      pendientes = todosVehiculos.where((v) => 
+          v.estado == EstadosVehiculo.pendiente || 
+          v.estado == EstadosVehiculo.enMantenimiento ||
+          v.estado == EstadosVehiculo.enProceso
+      ).toList();
+      
+      realizados = todosVehiculos.where((v) => 
+          v.estado == EstadosVehiculo.realizado ||
+          v.estado == EstadosVehiculo.completado ||
+          v.estado == EstadosVehiculo.mantenimientoCompletado
+      ).toList();
+      
+      // Inicializar lista actual
       _vehiculosActuales = List.from(todos);
       
       print('✅ Cargados: ${todos.length} vehículos total');
@@ -53,7 +64,7 @@ class VehiculosController with ChangeNotifier {
     }
   }
 
-  // AGREGAR: Métodos que necesita el screen
+  // Métodos para mostrar diferentes listas
   void mostrarTodos() {
     _vehiculosActuales = _aplicarFiltro(todos);
     notifyListeners();
@@ -74,7 +85,7 @@ class VehiculosController with ChangeNotifier {
     notifyListeners();
   }
 
-  // AGREGAR: Filtrar vehículos por texto
+  // Filtrar vehículos por texto
   void filtrarVehiculos(String termino) {
     _terminoBusqueda = termino.toLowerCase();
     
@@ -108,19 +119,19 @@ class VehiculosController with ChangeNotifier {
     }).toList();
   }
 
-  // Limpia los filtros
+  // Limpiar filtros
   void limpiarFiltros() {
     _terminoBusqueda = '';
     _vehiculosActuales = List.from(todos);
     notifyListeners();
   }
 
-  // Refresca datos
+  // Refrescar datos
   Future<void> refrescar() async {
     await cargarVehiculos();
   }
 
-  // Busca vehículo por ID
+  // Buscar vehículo por ID
   Vehiculo? buscarVehiculoPorId(String id) {
     try {
       return todos.firstWhere((v) => v.id == id);

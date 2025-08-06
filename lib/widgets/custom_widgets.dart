@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tallermecanico/controllers/recepcion_controller.dart';
 import '../constants/app_colors.dart';
+import '../models/cliente_model.dart';
+import '../models/vehiculo_model.dart';
 
 class CustomWidgets {
-  // ========================================
-  // 🎨 CAMPOS DE TEXTO
-  // ========================================
-
   static Widget buildTextField(
     String label, {
     TextEditingController? controller,
@@ -24,7 +22,7 @@ class CustomWidgets {
           floatingLabelStyle: const TextStyle(
             color: AppColors.textoPlaceholder,
             fontSize: 12,
-            fontWeight: FontWeight.bold, // ✅ Más bold para mejor contraste
+            fontWeight: FontWeight.bold,
           ),
           filled: true,
           fillColor: AppColors.fondoInput,
@@ -105,11 +103,11 @@ class CustomWidgets {
     BuildContext context,
     RecepcionController controller,
   ) {
-    // ✅ CONTROLADORES LOCALES E INDEPENDIENTES
     final marcaController = TextEditingController();
     final modeloController = TextEditingController();
     final anioController = TextEditingController();
     final placaController = TextEditingController();
+    final kilometrajeController = TextEditingController();
 
     showModalBottomSheet(
       context: context,
@@ -260,6 +258,11 @@ class CustomWidgets {
                         controller: anioController,
                         keyboardType: TextInputType.number,
                       ),
+                      CustomWidgets.buildTextField(
+                        'Kilometraje',
+                        controller: kilometrajeController,
+                        keyboardType: TextInputType.number,
+                      ),
                       const SizedBox(height: 20),
 
                       // Botones
@@ -298,18 +301,15 @@ class CustomWidgets {
                                 // Validar campos obligatorios
                                 if (marcaController.text.trim().isEmpty ||
                                     modeloController.text.trim().isEmpty ||
-                                    placaController.text.trim().isEmpty) {
-                                  // USAR DIÁLOGO en lugar de SnackBar
+                                    placaController.text.trim().isEmpty ||
+                                    kilometrajeController.text.trim().isEmpty) {
                                   showDialog(
                                     context: modalContext,
                                     builder: (BuildContext dialogContext) {
                                       return AlertDialog(
-                                        backgroundColor:
-                                            AppColors.advertenciaFondo,
+                                        backgroundColor: AppColors.advertenciaFondo,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            18,
-                                          ),
+                                          borderRadius: BorderRadius.circular(18),
                                         ),
                                         title: Row(
                                           children: [
@@ -322,8 +322,7 @@ class CustomWidgets {
                                             const Text(
                                               'Campos requeridos',
                                               style: TextStyle(
-                                                color:
-                                                    AppColors.advertenciaTexto,
+                                                color: AppColors.advertenciaTexto,
                                                 fontSize: 18,
                                               ),
                                             ),
@@ -337,14 +336,11 @@ class CustomWidgets {
                                         ),
                                         actions: [
                                           TextButton(
-                                            onPressed: () => Navigator.of(
-                                              dialogContext,
-                                            ).pop(),
+                                            onPressed: () => Navigator.of(dialogContext).pop(),
                                             child: const Text(
                                               'Entendido',
                                               style: TextStyle(
-                                                color:
-                                                    AppColors.advertenciaTexto,
+                                                color: AppColors.advertenciaTexto,
                                               ),
                                             ),
                                           ),
@@ -356,32 +352,28 @@ class CustomWidgets {
                                 }
                                 try {
                                   controller.setModalAbierto(false);
-                                  Navigator.pop(
-                                    modalContext,
-                                  ); // Cerrar modal primero
+                                  Navigator.pop(modalContext);
 
-                                  // 2. Usar método del controller directamente
                                   await controller.guardarVehiculo(
                                     context,
                                     marcaController,
                                     modeloController,
                                     anioController,
                                     placaController,
+                                    kilometrajeController,
                                   );
 
-                                  // 3. Mostrar mensaje de éxito
                                   if (context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                        margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom,
+                                        margin: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context).viewInsets.bottom,
                                           left: 50,
                                           right: 50,
                                         ),
                                         content: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Icon(
                                               Icons.check_circle,
@@ -405,7 +397,7 @@ class CustomWidgets {
                                     );
                                   }
                                 } catch (e) {
-                                  ScaffoldMessenger.of(modalContext,).showSnackBar(
+                                  ScaffoldMessenger.of(modalContext).showSnackBar(
                                     SnackBar(
                                       content: Text('Error: $e'),
                                       backgroundColor: AppColors.error,
@@ -414,7 +406,7 @@ class CustomWidgets {
                                   );
                                 }
                               },
-                              child: const Text('Guardar Vehículo', textAlign: TextAlign.center,),
+                              child: const Text('Guardar Vehículo', textAlign: TextAlign.center),
                             ),
                           ),
                         ],
@@ -428,7 +420,6 @@ class CustomWidgets {
         );
       },
     ).then((_) {
-      // Asegurar que se marca como cerrado si se cierra por swipe o back
       controller.setModalAbierto(false);
     });
   }
@@ -438,7 +429,6 @@ class CustomWidgets {
     BuildContext context,
     RecepcionController controller,
   ) {
-    // ✅ CONTROLADORES LOCALES E INDEPENDIENTES
     final nombreController = TextEditingController();
     final cedulaController = TextEditingController();
     final telefonoController = TextEditingController();
@@ -527,9 +517,7 @@ class CustomWidgets {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.botonPrincipalHover.withValues(
-                          alpha: 0.2,
-                        ),
+                        color: AppColors.botonPrincipalHover.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: Icon(
@@ -624,19 +612,15 @@ class CustomWidgets {
                                 ),
                               ),
                               onPressed: () async {
-                                // ✅ Validar campos obligatorios
                                 if (nombreController.text.trim().isEmpty ||
                                     cedulaController.text.trim().isEmpty) {
                                   showDialog(
                                     context: modalContext,
                                     builder: (BuildContext dialogContext) {
                                       return AlertDialog(
-                                        backgroundColor:
-                                            AppColors.advertenciaFondo,
+                                        backgroundColor: AppColors.advertenciaFondo,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            18,
-                                          ),
+                                          borderRadius: BorderRadius.circular(18),
                                         ),
                                         title: Row(
                                           children: [
@@ -649,8 +633,7 @@ class CustomWidgets {
                                             const Text(
                                               'Campos requeridos',
                                               style: TextStyle(
-                                                color:
-                                                    AppColors.advertenciaTexto,
+                                                color: AppColors.advertenciaTexto,
                                                 fontSize: 18,
                                               ),
                                             ),
@@ -664,14 +647,11 @@ class CustomWidgets {
                                         ),
                                         actions: [
                                           TextButton(
-                                            onPressed: () => Navigator.of(
-                                              dialogContext,
-                                            ).pop(),
+                                            onPressed: () => Navigator.of(dialogContext).pop(),
                                             child: const Text(
                                               'Entendido',
                                               style: TextStyle(
-                                                color:
-                                                    AppColors.advertenciaTexto,
+                                                color: AppColors.advertenciaTexto,
                                               ),
                                             ),
                                           ),
@@ -683,33 +663,20 @@ class CustomWidgets {
                                 }
 
                                 try {
-                                  // 1. Asignar valores a los controladores del controller
-                                  controller.nombreController.text =
-                                      nombreController.text;
-                                  controller.cedulaController.text =
-                                      cedulaController.text;
-                                  controller.telefonoController.text =
-                                      telefonoController.text;
-                                  controller.correoController.text =
-                                      correoController.text;
+                                  controller.nombreController.text = nombreController.text;
+                                  controller.cedulaController.text = cedulaController.text;
+                                  controller.telefonoController.text = telefonoController.text;
+                                  controller.correoController.text = correoController.text;
 
-                                  // 2. Cerrar modal primero
-                                  controller.setModalAbierto(
-                                    false,
-                                  ); // Marcar como cerrado
+                                  controller.setModalAbierto(false);
                                   Navigator.pop(modalContext);
 
-                                  // 3. Usar método del controller directamente
                                   await controller.registrarClienteNuevo(() {
-                                    // 4. Mostrar mensaje de éxito
                                     if (context.mounted) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
+                                      ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                           content: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               Icon(
                                                 Icons.check_circle,
@@ -732,9 +699,7 @@ class CustomWidgets {
                                     }
                                   });
                                 } catch (e) {
-                                  ScaffoldMessenger.of(
-                                    modalContext,
-                                  ).showSnackBar(
+                                  ScaffoldMessenger.of(modalContext).showSnackBar(
                                     SnackBar(
                                       content: Text('Error: $e'),
                                       backgroundColor: AppColors.error,
@@ -743,7 +708,7 @@ class CustomWidgets {
                                   );
                                 }
                               },
-                              child: const Text('Guardar Cliente', textAlign: TextAlign.center,),
+                              child: const Text('Guardar Cliente', textAlign: TextAlign.center),
                             ),
                           ),
                         ],
@@ -757,7 +722,6 @@ class CustomWidgets {
         );
       },
     ).then((_) {
-      // Asegurar que se marca como cerrado si se cierra por swipe o back
       controller.setModalAbierto(false);
     });
   }
@@ -766,8 +730,419 @@ class CustomWidgets {
     return const _FloatingHandPointer();
   }
 
+  // ✅ WIDGET CLIENTE FLEXIBLE - Compatible con todos los casos
+  static Widget buildClienteInfo(
+    Cliente cliente, {
+    bool mostrarNombre = true,
+    bool mostrarCedula = true,
+    bool mostrarTelefono = false,
+    bool mostrarCorreo = false,
+    String? titulo,
+    bool compacto = false,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            titulo ?? 'CLIENTE',
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textoEtiqueta,
+            ),
+          ),
+          const SizedBox(height: 8),
+          
+          if (compacto) ...[
+            Row(
+              children: [
+                if (mostrarNombre) 
+                  Expanded(
+                    child: Text(
+                      cliente.nombre.toUpperCase(),
+                      style: const TextStyle(
+                        color: AppColors.textoTitulo,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                if (mostrarCedula)
+                  Text(
+                    cliente.cedula,
+                    style: const TextStyle(
+                      color: AppColors.textoEtiqueta,
+                      fontSize: 14,
+                    ),
+                  ),
+              ],
+            ),
+          ] else ...[
+            if (mostrarNombre)
+              Text(
+                cliente.nombre.toUpperCase(),
+                style: const TextStyle(
+                  color: AppColors.textoTitulo,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            if (mostrarCedula) ...[
+              const SizedBox(height: 4),
+              Text(
+                'Cédula: ${cliente.cedula}',
+                style: const TextStyle(
+                  color: AppColors.textoEtiqueta,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+            if (mostrarTelefono) ...[
+              const SizedBox(height: 4),
+              Text(
+                'Teléfono: ${cliente.telefono}',
+                style: const TextStyle(
+                  color: AppColors.textoEtiqueta,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+            if (mostrarCorreo) ...[
+              const SizedBox(height: 4),
+              Text(
+                'Email: ${cliente.correo}',
+                style: const TextStyle(
+                  color: AppColors.textoEtiqueta,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+
+  // ✅ WIDGET VEHÍCULO FLEXIBLE - Compatible con todos los casos
+  static Widget buildVehiculoInfo(
+    Vehiculo vehiculo, {
+    bool mostrarPlaca = true,
+    bool mostrarMarca = true,
+    bool mostrarModelo = true,
+    bool mostrarAnio = true,
+    bool mostrarKilometraje = false,
+    bool mostrarCliente = false,
+    String? titulo,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            titulo ?? 'VEHÍCULO',
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textoEtiqueta,
+            ),
+          ),
+          const SizedBox(height: 12),
+          
+          if (mostrarCliente)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: buildInfoField('Cliente', vehiculo.nombreCliente),
+            ),
+          if (mostrarPlaca || mostrarMarca)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                children: [
+                  if (mostrarPlaca) Expanded(child: buildInfoField('Placa', vehiculo.placa.toUpperCase())),
+                  if (mostrarMarca) Expanded(child: buildInfoField('Marca', vehiculo.marca)),
+                ],
+              ),
+            ),
+          if (mostrarModelo || mostrarAnio)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                children: [
+                  if (mostrarModelo) Expanded(child: buildInfoField('Modelo', vehiculo.modelo)),
+                  if (mostrarAnio) Expanded(child: buildInfoField('Año', vehiculo.anio)),
+                ],
+              ),
+            ),
+          if (mostrarKilometraje)
+            buildInfoField('Kilometraje', vehiculo.kilometraje ?? 'N/A'),
+        ],
+      ),
+    );
+  }
+
+  // Campos específicos para Cliente
+  static Widget cliente(
+    Cliente cliente, {
+    List<String> campos = const ['nombre', 'cedula'],
+    String? titulo,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (titulo != null) ...[
+            Text(
+              titulo,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textoEtiqueta,
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+          
+          ...campos.map((campo) {
+            switch (campo.toLowerCase()) {
+              case 'nombre':
+                return _buildCampoTexto(cliente.nombre.toUpperCase(), esTitulo: true);
+              case 'cedula':
+                return _buildCampoTexto('Cédula: ${cliente.cedula}');
+              case 'telefono':
+                return _buildCampoTexto('Teléfono: ${cliente.telefono}');
+              case 'correo':
+              case 'email':
+                return _buildCampoTexto('Email: ${cliente.correo}');
+              default:
+                return const SizedBox.shrink();
+            }
+          }).toList(),
+        ],
+      ),
+    );
+  }
+
+  static Widget vehiculo(
+    Vehiculo vehiculo, {
+    List<String> campos = const ['placa', 'marca', 'modelo', 'anio'],
+    String? titulo,
+    bool mostrarEnFilas = true,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (titulo != null) ...[
+            Text(
+              titulo,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textoEtiqueta,
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+          
+          if (mostrarEnFilas) ...[
+            for (int i = 0; i < campos.length; i += 2) ...[
+              Row(
+                children: [
+                  SizedBox(width: 10,),
+                  SizedBox(width:160, child: _buildCampoVehiculo(vehiculo, campos[i])),
+                  const SizedBox(width: 10),
+                  if (i + 1 < campos.length)
+                    SizedBox(width:100, child: _buildCampoVehiculo(vehiculo, campos[i + 1]))
+                  else
+                    const SizedBox(width:20),
+                ],
+              ),
+              if (i + 2 < campos.length) const SizedBox(height: 12),
+            ],
+          ] else ...[
+            ...campos.map((campo) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: _buildCampoVehiculo(vehiculo, campo),
+            )).toList(),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // ✅ MÉTODOS AUXILIARES ESTÁTICOS
+  static Widget _buildCampoTexto(String texto, {bool esTitulo = false}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Center(
+        child: Text(
+          texto,
+          style: TextStyle(
+            color: esTitulo ? AppColors.textoTitulo : AppColors.textoEtiqueta,
+            fontSize: esTitulo ? 20 : 14,
+            fontWeight: esTitulo ? FontWeight.w600 : FontWeight.normal,
+          ),
+        ),
+      ),  
+    );
+  }
+
+  static Widget _buildCampoVehiculo(Vehiculo vehiculo, String campo) {
+    String label, valor;
+    
+    switch (campo.toLowerCase()) {
+      case 'placa':
+        label = 'Placa: ${vehiculo.placa.toUpperCase()}';
+        valor = vehiculo.placa.toUpperCase();
+        break;
+      case 'marca':
+        label = 'Marca:';
+        valor = vehiculo.marca.substring(0, 1).toUpperCase() + vehiculo.marca.substring(1).toLowerCase();
+        break;
+      case 'modelo':
+        label = 'Modelo:';
+        valor = vehiculo.modelo.substring(0, 1).toUpperCase() + vehiculo.modelo.substring(1).toLowerCase();
+        break;
+      case 'anio':
+      case 'año':
+        label = 'Año:';
+        valor = vehiculo.anio;
+        break;
+      case 'kilometraje':
+        label = 'Kilometraje:';
+        valor = vehiculo.kilometraje ?? 'km';
+        break;
+      case 'cliente':
+      case 'propietario':
+        label = 'Cliente:';
+        valor = vehiculo.nombreCliente.toUpperCase();
+        break;
+      case 'estado':
+        label = 'Estado:';
+        valor = vehiculo.estado;
+        break;
+      default:
+        return const SizedBox.shrink();
+    }
+    
+    return buildInfoField(label, valor);
+  }
+
+  static Widget buildInfoField(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          textAlign: TextAlign.start,
+          style: const TextStyle(
+            color: AppColors.textoEtiqueta,
+            fontSize: 12,
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static Widget buildEstadoMantenimiento(String estado, {DateTime? fecha, Map<String, dynamic>? resumen}) {
+    Color color;
+    String texto;
+    IconData icono;
+
+    switch (estado) {
+      case 'completado':
+        color = AppColors.exito;
+        texto = 'Completado';
+        icono = Icons.check_circle;
+        break;
+      case 'en_proceso':
+        color = AppColors.advertencia;
+        texto = 'En Proceso';
+        icono = Icons.schedule;
+        break;
+      default:
+        color = AppColors.iconoSecundario;
+        texto = 'Pendiente';
+        icono = Icons.pending;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(icono, color: color, size: 24),
+              const SizedBox(width: 12),
+              Text(
+                texto,
+                style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+          if (fecha != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              'Fecha: ${fecha.day}/${fecha.month}/${fecha.year}',
+              style: const TextStyle(color: AppColors.textoEtiqueta, fontSize: 14),
+            ),
+          ],
+          if (resumen != null && resumen.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              'Progreso: ${resumen['porcentaje'] ?? 0}%',
+              style: const TextStyle(color: Colors.white, fontSize: 14),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
 }
 
+// ✅ CLASE SEPARADA PARA ANIMACIÓN
 class _FloatingHandPointer extends StatefulWidget {
   const _FloatingHandPointer();
 
@@ -811,7 +1186,7 @@ class _FloatingHandPointerState extends State<_FloatingHandPointer>
         return Transform.translate(
           offset: Offset(0, _animation.value),
           child: const Icon(
-            Icons.touch_app, // ✅ Ícono de mano apuntando
+            Icons.touch_app,
             color: AppColors.iconoPrincipal,
             size: 30,
           ),
