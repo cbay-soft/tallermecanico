@@ -57,7 +57,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  // ✅ Sección de búsqueda
+                  // Sección de búsqueda
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -86,7 +86,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                               textAlign: TextAlign.left,
                               controller: _busquedaController,
                               decoration: InputDecoration(
-                                // ✅ QUITAR const
+
                                 filled: true,
                                 labelText: 'Buscar por placa o cliente',
                                 contentPadding: const EdgeInsets.symmetric(
@@ -101,7 +101,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                                     color: AppColors.textoAzul,
                                   ),
                                 ),
-                                // ✅ CORREGIR: Hacer dinámico el suffixIcon
+                                // Hacer dinámico el suffixIcon
                                 suffixIcon: _busquedaController.text.isNotEmpty
                                     ? IconButton(
                                         icon: const Icon(
@@ -111,14 +111,14 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
                                         onPressed: () {
                                           _busquedaController.clear();
                                           controller.limpiarFiltros();
-                                          setState(() {}); // ✅ Actualizar UI
+                                          setState(() {}); // Actualizar UI
                                         },
                                       )
                                     : null,
                               ),
                               onChanged: (value) {
                                 controller.filtrarVehiculos(value);
-                                setState(() {}); // ✅ Para actualizar suffixIcon
+                                setState(() {}); // Para actualizar suffixIcon
                               },
                             ),
                           ],
@@ -144,7 +144,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
 
                   const SizedBox(height: 20),
 
-                  // ✅ SegmentedButton
+                  // SegmentedButton
                   SegmentedButton<TaskStatus>(
                     segments: const <ButtonSegment<TaskStatus>>[
                       ButtonSegment<TaskStatus>(
@@ -174,7 +174,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
 
                   const SizedBox(height: 20),
 
-                  // ✅ Estado actual
+                  // Estado actual
                   Text(
                     'Mostrando: ${_getEstadoTexto(selection.first)} (${_getConteo(controller, selection.first)})',
                     style: const TextStyle(
@@ -186,7 +186,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
 
                   const SizedBox(height: 10),
 
-                  // ✅ Lista de vehículos
+                  // Lista de vehículos
                   Expanded(
                     child: controller.cargando
                         ? const Center(
@@ -205,7 +205,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     );
   }
 
-  // ✅ Método para filtrar por estado
+  // Método para filtrar por estado
   void _filtrarPorEstado(VehiculosController controller, TaskStatus estado) {
     switch (estado) {
       case TaskStatus.all:
@@ -349,7 +349,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
           child: Container(
             margin: const EdgeInsets.all(1),
             decoration: BoxDecoration(
-              color: AppColors.fondoPrincipalClaro, // ✅ Usar tu color de fondo
+              color: AppColors.fondoPrincipalClaro, // Usa el color de fondo
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -375,7 +375,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // ✅ Estado y número
+                  // Estado y número
                   Row(
                     children: [
                       Container(
@@ -460,7 +460,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
 
                   const SizedBox(height: 20),
 
-                  // ✅ Botón cerrar
+                  // Botón cerrar
                   SizedBox(
                     width: double.infinity,
                     child: TextButton(
@@ -579,7 +579,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
 
   // Funciones para las acciones de los botones
   void _abrirExpediente(BuildContext context, dynamic vehiculo) {
-    // ✅ CAMBIAR: Navegar al expediente en lugar de SnackBar
+    // CAMBIAR: Navegar al expediente en lugar de SnackBar
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -589,7 +589,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
   }
 
   void _verDetalleCompleto(BuildContext context, dynamic vehiculo) {
-    // ✅ CAMBIAR: Navegar al detalle en lugar de SnackBar
+    // CAMBIAR: Navegar al detalle en lugar de SnackBar
     Navigator.push(
       context,
       MaterialPageRoute(

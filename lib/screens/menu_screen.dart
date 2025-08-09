@@ -79,22 +79,6 @@ class _MenuScreenState extends State<MenuScreen> {
                 child: const Text('VEHICULOS'),
               ),
             ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: 250,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Colors.orange, // Color distintivo para mecánico
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 50),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/mecanico');
-                },
-                child: const Text('PANEL MECÁNICO'),
-              ),
-            ),
           ],
         ),
       ),

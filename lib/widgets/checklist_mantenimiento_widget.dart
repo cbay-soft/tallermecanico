@@ -306,7 +306,7 @@ class _ChecklistMantenimientoWidgetState extends State<ChecklistMantenimientoWid
             ),
           ),
           const SizedBox(width: 12),
-          // ✅ Texto del item
+          // Texto del item
           Expanded(
             child: Text(
               item,

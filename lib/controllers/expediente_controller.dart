@@ -6,11 +6,11 @@ import '../services/firebase_service.dart';
 class ExpedienteController extends ChangeNotifier {
   final FirebaseService _firebaseService = FirebaseService();
 
-  // ✅ VARIABLES PRINCIPALES
+  // VARIABLES PRINCIPALES
   Cliente? cliente;
-  Vehiculo? vehiculo; // ✅ AGREGAR esta variable que faltaba
+  Vehiculo? vehiculo;
   List<Vehiculo> vehiculos = [];
-  List<dynamic> mantenimientos = []; // ✅ AGREGAR esta variable que faltaba
+  List<dynamic> mantenimientos = [];
   bool cargando = false;
 
   Future<void> cargarExpediente(String vehiculoId) async {
@@ -20,7 +20,7 @@ class ExpedienteController extends ChangeNotifier {
     try {
       print('🔍 Cargando expediente para vehículo: $vehiculoId'); // Debug
 
-      // ✅ Cargar vehículo primero
+      // Cargar vehículo primero
       final vehiculoDoc = await _firebaseService.firestore
           .collection('vehiculos')
           .doc(vehiculoId)
@@ -28,9 +28,9 @@ class ExpedienteController extends ChangeNotifier {
 
       if (vehiculoDoc.exists) {
         vehiculo = Vehiculo.fromMap(vehiculoDoc.id, vehiculoDoc.data()!);
-        print('✅ Vehículo cargado: ${vehiculo!.placa}'); // Debug
+        print('Vehículo cargado: ${vehiculo!.placa}'); // Debug
 
-        // ✅ Cargar cliente usando el clienteId del vehículo
+        // Cargar cliente usando el clienteId del vehículo
         final clienteDoc = await _firebaseService.firestore
             .collection('clientes')
             .doc(vehiculo!.clienteId)
@@ -41,7 +41,7 @@ class ExpedienteController extends ChangeNotifier {
           print('✅ Cliente cargado: ${cliente!.nombre}'); // Debug
         }
 
-        // ✅ Cargar TODOS los vehículos del cliente
+        // Cargar TODOS los vehículos del cliente
         final vehiculosQuery = await _firebaseService.firestore
             .collection('vehiculos')
             .where('clienteId', isEqualTo: vehiculo!.clienteId)
@@ -53,7 +53,7 @@ class ExpedienteController extends ChangeNotifier {
 
         print('✅ Vehículos del cliente: ${vehiculos.length}'); // Debug
 
-        // ✅ Cargar mantenimientos para TODOS los vehículos del cliente
+        // Cargar mantenimientos para TODOS los vehículos del cliente
         mantenimientos.clear();
 
         for (final vehiculoItem in vehiculos) {
@@ -76,7 +76,7 @@ class ExpedienteController extends ChangeNotifier {
           mantenimientos.addAll(mantenimientosVehiculo);
         }
 
-        // ✅ Ordenar todos los mantenimientos por fecha (si existe)
+        // Ordenar todos los mantenimientos por fecha (si existe)
         mantenimientos.sort((a, b) {
           try {
             final fechaA = a['fecha'] != null
@@ -106,7 +106,7 @@ class ExpedienteController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ✅ MÉTODO ÚNICO para obtener mantenimientos de un vehículo específico
+  // MÉTODO ÚNICO para obtener mantenimientos de un vehículo específico
   List<dynamic> getMantenimientosVehiculo(String vehiculoId) {
     final resultado = mantenimientos
         .where((mantenimiento) => mantenimiento['vehiculoId'] == vehiculoId)

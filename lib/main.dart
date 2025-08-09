@@ -6,7 +6,7 @@ import 'app.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ Verifica que no esté ya inicializado
+  // Verifica que no esté ya inicializado
   if (Firebase.apps.isEmpty) {
     final apps = Firebase.apps;
     if (apps.isEmpty) {

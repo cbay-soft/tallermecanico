@@ -50,13 +50,13 @@ class _DetalleVehiculoScreenState extends State<DetalleVehiculoScreen> {
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          // ✅ USAR widget existente
+                          // USAR widget existente
                           CustomWidgets.buildVehiculoInfo(widget.vehiculo),
                           const SizedBox(height: 16),
-                          // ✅ USAR widget existente
+                          // USAR widget existente
                           _buildEstadoSection(controller),
                           const SizedBox(height: 16),
-                          // ✅ USAR widget existente para fotos
+                          // USAR widget existente para fotos
                           _buildFotosSection(controller),
                         ],
                       ),
@@ -88,7 +88,7 @@ class _DetalleVehiculoScreenState extends State<DetalleVehiculoScreen> {
     final fecha = DateTime.parse(ultimo['fecha']);
     final resumen = ultimo['resumenChecklist'];
 
-    // ✅ USAR widget existente
+    // USAR widget existente
     return CustomWidgets.buildEstadoMantenimiento(estado, fecha: fecha, resumen: resumen);
   }
 
@@ -113,7 +113,7 @@ class _DetalleVehiculoScreenState extends State<DetalleVehiculoScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // ✅ USAR widget existente
+                // USAR widget existente
                 CustomWidgets.buildImagePlaceholder('Foto 1'),
                 CustomWidgets.buildImagePlaceholder('Foto 2'),
                 CustomWidgets.buildImagePlaceholder('Foto 3'),

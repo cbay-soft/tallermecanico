@@ -69,26 +69,43 @@ class FotosService {
     String vehiculoId,
     String tipoMantenimiento,
   ) async {
+    print('🔄 Guardando foto individual: $tipoMantenimiento');
+
     if (!_inicializado) {
-      print('❌ Servicio no inicializado');
+      print('❌ Servicio no inicializado para guardar foto');
       return null;
     }
 
     try {
-      print(
-        '� Guardando foto definitiva: $tipoMantenimiento para vehículo $vehiculoId',
-      );
+      print('📁 Verificando que el archivo existe: ${await foto.exists()}');
+      if (!await foto.exists()) {
+        print('❌ El archivo de foto no existe');
+        return null;
+      }
+
+      print('📂 Verificando carpeta destino: $_rutaCarpeta');
+      final carpeta = Directory(_rutaCarpeta!);
+      if (!await carpeta.exists()) {
+        print('📁 Creando carpeta destino...');
+        await carpeta.create(recursive: true);
+      }
 
       // Generar nombre único para la foto
       final timeStamp = DateTime.now().millisecondsSinceEpoch;
       final fileName = '${tipoMantenimiento}_${vehiculoId}_$timeStamp.jpg';
       final rutaFinal = '$_rutaCarpeta/$fileName';
 
+      print('💾 Copiando foto a: $rutaFinal');
+
       // Copiar foto a la galería
       final fotoGuardada = await foto.copy(rutaFinal);
 
+      print('✔️ Verificando que se copió correctamente...');
       if (await fotoGuardada.exists()) {
-        print('✅ Foto guardada en galería: $rutaFinal');
+        final tamano = await fotoGuardada.length();
+        print(
+          '✅ Foto guardada exitosamente en galería: $rutaFinal ($tamano bytes)',
+        );
         return rutaFinal;
       } else {
         print('❌ Error: archivo no se guardó correctamente');
@@ -96,6 +113,7 @@ class FotosService {
       }
     } catch (e) {
       print('❌ Error guardando foto en galería: $e');
+      print('Stack trace: ${StackTrace.current}');
       return null;
     }
   }
@@ -128,7 +146,9 @@ class FotosService {
 
       print('📸 Procesando foto: $tipoFoto');
       print('📍 Archivo existe: ${await archivo.exists()}');
-      print('📏 Tamaño archivo: ${await archivo.length()} bytes');
+      if (await archivo.exists()) {
+        print('📏 Tamaño archivo: ${await archivo.length()} bytes');
+      }
 
       final rutaGuardada = await guardarFotoEnGaleria(
         archivo,

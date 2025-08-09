@@ -18,18 +18,18 @@ class RecepcionController extends ChangeNotifier {
 
   final FirebaseService servicio = FirebaseService();
 
-  // ✅ AGREGAR esta nueva variable
+  // AGREGAR esta nueva variable
   bool _seHaBuscado = false;
   bool get seHaBuscado => _seHaBuscado;
 
   bool buscando = false;
   bool mostrarFormularioVehiculo = false;
 
-  // ✅ Nueva propiedad para controlar cuándo ocultar teclado
+  // Nueva propiedad para controlar cuándo ocultar teclado
   bool _debeOcultarTeclado = false;
   bool get debeOcultarTeclado => _debeOcultarTeclado;
 
-  // ✅ Agregar variable para controlar modales
+  // Agregar variable para controlar modales
   bool _modalAbierto = false;
   bool get modalAbierto => _modalAbierto;
 
@@ -65,7 +65,7 @@ class RecepcionController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ✅ AGREGAR método para reset cuando se cambia la cédula
+  // AGREGAR método para reset cuando se cambia la cédula
   void resetearBusqueda() {
     _seHaBuscado = false;
     clienteEncontrado = null;

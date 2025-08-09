@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart'; // ✅ AGREGAR: Import faltante para Colors
+import 'package:flutter/material.dart'; // Import faltante para Colors
 
 class EstadosVehiculo {
   static const String ingresado = 'ingresado';
@@ -8,7 +8,7 @@ class EstadosVehiculo {
   static const String listo = 'listo_para_entrega';
   static const String entregado = 'entregado';
   
-  // ✅ AGREGAR: Estados que usas en otros lugares
+  // Estados que usas en otros lugares
   static const String pendiente = 'pendiente';
   static const String realizado = 'realizado';
   static const String completado = 'completado';

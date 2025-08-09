@@ -1,19 +1,19 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../constants/app_colors.dart';
-import '../services/fotos_service.dart';
 
 class CameraWidget extends StatefulWidget {
   final String vehiculoId;
   final String tipoFoto;
-  final Function(String url)? onFotoSubida;
+  final Function(File? foto)? onFotoCapturada;
 
   const CameraWidget({
     super.key,
     required this.vehiculoId,
     required this.tipoFoto,
-    this.onFotoSubida,
+    this.onFotoCapturada,
   });
 
   @override
@@ -22,41 +22,19 @@ class CameraWidget extends StatefulWidget {
 
 class _CameraWidgetState extends State<CameraWidget> {
   final ImagePicker _picker = ImagePicker();
-  final FotosService _fotosService = FotosService();
 
-  bool _subiendo = false;
-  String? _fotoUrl;
+  File? _fotoCapturada; // Foto en memoria, no guardada aún
+  bool _tomandoFoto = false;
 
   @override
   void initState() {
     super.initState();
-    _inicializar();
+    _verificarPermisos();
   }
 
-  Future<void> _inicializar() async {
-    try {
-      await _fotosService.initialize();
-      await _cargarFotoExistente();
-    } catch (e) {
-      print('Error inicializando: $e');
-    }
-  }
-
-  Future<void> _cargarFotoExistente() async {
-    try {
-      final fotos = await _fotosService.obtenerFotosVehiculo(widget.vehiculoId);
-      final fotoTipo = fotos
-          .where((f) => f['name']!.contains(widget.tipoFoto))
-          .firstOrNull;
-
-      if (fotoTipo != null && mounted) {
-        setState(() {
-          _fotoUrl = fotoTipo['url'];
-        });
-      }
-    } catch (e) {
-      print('Error cargando foto: $e');
-    }
+  // Verificar permisos de cámara y almacenamiento
+  Future<void> _verificarPermisos() async {
+    await [Permission.camera, Permission.storage, Permission.photos].request();
   }
 
   @override
@@ -71,60 +49,31 @@ class _CameraWidgetState extends State<CameraWidget> {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
         ),
-        child: _subiendo
+        child: _tomandoFoto
             ? const Center(
                 child: CircularProgressIndicator(
                   color: AppColors.iconoPrincipal,
                 ),
               )
-            : _fotoUrl != null && _fotoUrl!.isNotEmpty
+            : _fotoCapturada != null
             ? Stack(
                 children: [
+                  // Vista previa de la foto capturada
                   ClipRRect(
                     borderRadius: BorderRadius.circular(6),
-                    child: Image.network(
-                      _fotoUrl!,
+                    child: Image.file(
+                      _fotoCapturada!,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.iconoPrincipal,
-                          ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.add_a_photo,
-                                color: AppColors.iconoPrincipal,
-                                size: 30,
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'AGREGAR',
-                                style: TextStyle(
-                                  color: AppColors.textoEtiqueta,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
                     ),
                   ),
+                  // Botón para quitar la foto
                   Positioned(
                     top: 4,
                     right: 4,
                     child: GestureDetector(
-                      onTap: _borrarFoto,
+                      onTap: _quitarFoto,
                       child: Container(
                         padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
@@ -135,6 +84,29 @@ class _CameraWidgetState extends State<CameraWidget> {
                           Icons.close,
                           color: Colors.white,
                           size: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Indicador de que está en memoria
+                  Positioned(
+                    bottom: 4,
+                    left: 4,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.iconoPrincipal.withValues(alpha: 0.8),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        'PREVIEW',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -164,6 +136,7 @@ class _CameraWidgetState extends State<CameraWidget> {
     );
   }
 
+  // Mostrar opciones de cámara o galería
   void _mostrarOpciones() {
     showModalBottomSheet(
       context: context,
@@ -249,120 +222,82 @@ class _CameraWidgetState extends State<CameraWidget> {
     );
   }
 
+  // Tomar foto con cámara
   Future<void> _tomarFoto() async {
-    try {
-      final XFile? image = await _picker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 70,
-        maxWidth: 1920,
-        maxHeight: 1080,
-      );
-
-      if (image != null) {
-        await _subirFoto(File(image.path));
-      }
-    } catch (e) {
-      _mostrarError('Error tomando foto: $e');
-    }
-  }
-
-  Future<void> _seleccionarGaleria() async {
-    try {
-      final XFile? image = await _picker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 70,
-        maxWidth: 1920,
-        maxHeight: 1080,
-      );
-
-      if (image != null) {
-        await _subirFoto(File(image.path));
-      }
-    } catch (e) {
-      _mostrarError('Error seleccionando foto: $e');
-    }
-  }
-
-  Future<void> _subirFoto(File foto) async {
     setState(() {
-      _subiendo = true;
+      _tomandoFoto = true;
     });
 
     try {
-      final url = await _fotosService.guardarFotoTemporal(
-        foto,
-        widget.vehiculoId,
-        widget.tipoFoto,
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 85,
+        maxWidth: 1920,
+        maxHeight: 1080,
       );
 
-      setState(() {
-        _fotoUrl = url;
-        _subiendo = false;
-      });
+      if (image != null) {
+        final File fotoFile = File(image.path);
 
-      if (url != null) {
-        widget.onFotoSubida?.call(url);
-      }
+        setState(() {
+          _fotoCapturada = fotoFile;
+          _tomandoFoto = false;
+        });
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Foto ${widget.tipoFoto} lista para subir a tu carpeta compartida',
-            ),
-            backgroundColor: AppColors.exito,
-          ),
-        );
+        // Notificar que se capturó una foto
+        widget.onFotoCapturada?.call(fotoFile);
       }
     } catch (e) {
+      _mostrarError('Error tomando foto: $e');
+    } finally {
       setState(() {
-        _subiendo = false;
+        _tomandoFoto = false;
       });
-      _mostrarError('Error subiendo foto: $e');
     }
   }
 
-  Future<void> _borrarFoto() async {
-    if (_fotoUrl == null) return;
+  // Seleccionar foto de galería
+  Future<void> _seleccionarGaleria() async {
+    setState(() {
+      _tomandoFoto = true;
+    });
 
-    final confirmar = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Borrar foto'),
-        content: Text('¿Borrar la foto ${widget.tipoFoto}?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Borrar', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+        maxWidth: 1920,
+        maxHeight: 1080,
+      );
 
-    if (confirmar == true) {
-      try {
-        final borrado = await _fotosService.borrarFoto(_fotoUrl!);
+      if (image != null) {
+        final File fotoFile = File(image.path);
 
-        if (borrado && mounted) {
-          setState(() {
-            _fotoUrl = null;
-          });
+        setState(() {
+          _fotoCapturada = fotoFile;
+          _tomandoFoto = false;
+        });
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Foto borrada'),
-              backgroundColor: AppColors.exito,
-            ),
-          );
-        }
-      } catch (e) {
-        _mostrarError('Error borrando foto: $e');
+        // Notificar que se seleccionó una foto
+        widget.onFotoCapturada?.call(fotoFile);
       }
+    } catch (e) {
+      _mostrarError('Error seleccionando foto: $e');
+    } finally {
+      setState(() {
+        _tomandoFoto = false;
+      });
     }
+  }
+
+  // Quitar foto capturada
+  void _quitarFoto() {
+    setState(() {
+      _fotoCapturada = null;
+    });
+
+    // Notificar que se quitó la foto
+    widget.onFotoCapturada?.call(null);
   }
 
   void _mostrarError(String mensaje) {
@@ -371,5 +306,15 @@ class _CameraWidgetState extends State<CameraWidget> {
         SnackBar(content: Text(mensaje), backgroundColor: AppColors.error),
       );
     }
+  }
+
+  // Método público para obtener la foto capturada
+  File? get fotoCapturada => _fotoCapturada;
+
+  // Método público para limpiar la foto
+  void limpiarFoto() {
+    setState(() {
+      _fotoCapturada = null;
+    });
   }
 }

@@ -36,7 +36,7 @@ class VehiculosController with ChangeNotifier {
       todos = todosVehiculos;
       ingresados = todosVehiculos.where((v) => v.estado == EstadosVehiculo.ingresado).toList();
       
-      // ✅ CORREGIR: Usar las constantes correctas
+      // Usa las constantes correctas
       pendientes = todosVehiculos.where((v) => 
           v.estado == EstadosVehiculo.pendiente || 
           v.estado == EstadosVehiculo.enMantenimiento ||

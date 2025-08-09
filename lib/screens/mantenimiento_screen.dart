@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallermecanico/widgets/camera_widget.dart';
@@ -30,6 +31,9 @@ class _MantenimientoScreenState extends State<MantenimientoScreen> {
   Vehiculo? vehiculo;
   Cliente? cliente;
   bool cargando = true;
+
+  // Map para manejar fotos capturadas
+  final Map<String, File> _fotosCapturadas = {};
 
   @override
   void initState() {
@@ -119,7 +123,7 @@ class _MantenimientoScreenState extends State<MantenimientoScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // ✅ USAR SOLO CAMPOS DISPONIBLES DEL VEHÍCULO
+                            // USAR SOLO CAMPOS DISPONIBLES DEL VEHÍCULO
                             CustomWidgets.vehiculo(
                               vehiculo!,
                               campos: [
@@ -136,7 +140,7 @@ class _MantenimientoScreenState extends State<MantenimientoScreen> {
                             const SizedBox(height: 16),
 
                             // Indicador de estado del servicio de fotos
-                            Container(
+                            /*Container(
                               padding: const EdgeInsets.all(12),
                               margin: const EdgeInsets.symmetric(
                                 horizontal: 16,
@@ -236,8 +240,7 @@ class _MantenimientoScreenState extends State<MantenimientoScreen> {
                                     ),
                                 ],
                               ),
-                            ),
-
+                            ),*/
                             ChecklistMantenimientoWidget(
                               onChecklistChanged: (checklist) {
                                 mantenimientoController.actualizarChecklist(
@@ -254,49 +257,98 @@ class _MantenimientoScreenState extends State<MantenimientoScreen> {
                                 color: Colors.white,
                               ),
                             ),
+                            const SizedBox(height: 4),
+
+                            // Indicador de fotos capturadas
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: _fotosCapturadas.isNotEmpty
+                                    ? AppColors.exito.withOpacity(0.2)
+                                    : Colors.white.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: _fotosCapturadas.isNotEmpty
+                                      ? AppColors.exito
+                                      : Colors.white.withOpacity(0.3),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.photo_camera,
+                                    size: 16,
+                                    color: _fotosCapturadas.isNotEmpty
+                                        ? AppColors.exito
+                                        : Colors.white60,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${_fotosCapturadas.length} foto(s) capturada(s)',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: _fotosCapturadas.isNotEmpty
+                                          ? AppColors.exito
+                                          : Colors.white60,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                             const SizedBox(height: 10),
 
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                GestureDetector(
-                                  onTap: () => _mostrarOpcionesFoto('frontal'),
-                                  child: CameraWidget(
-                                    vehiculoId: widget.vehiculoId,
-                                    tipoFoto: 'frontal',
-                                    onFotoSubida: (url) {
-                                      mantenimientoController.agregarFoto(
-                                        'frontal',
-                                        url,
-                                      );
-                                    },
-                                  ),
+                                CameraWidget(
+                                  vehiculoId: widget.vehiculoId,
+                                  tipoFoto: 'frontal',
+                                  onFotoCapturada: (File? foto) {
+                                    setState(() {
+                                      if (foto != null) {
+                                        _fotosCapturadas['frontal'] = foto;
+                                        print('📸 Foto frontal capturada');
+                                      } else {
+                                        _fotosCapturadas.remove('frontal');
+                                        print('🗑️ Foto frontal eliminada');
+                                      }
+                                    });
+                                  },
                                 ),
-                                GestureDetector(
-                                  onTap: () => _mostrarOpcionesFoto('lateral'),
-                                  child: CameraWidget(
-                                    vehiculoId: widget.vehiculoId,
-                                    tipoFoto: 'lateral',
-                                    onFotoSubida: (url) {
-                                      mantenimientoController.agregarFoto(
-                                        'lateral',
-                                        url,
-                                      );
-                                    },
-                                  ),
+                                CameraWidget(
+                                  vehiculoId: widget.vehiculoId,
+                                  tipoFoto: 'lateral',
+                                  onFotoCapturada: (File? foto) {
+                                    setState(() {
+                                      if (foto != null) {
+                                        _fotosCapturadas['lateral'] = foto;
+                                        print('📸 Foto lateral capturada');
+                                      } else {
+                                        _fotosCapturadas.remove('lateral');
+                                        print('🗑️ Foto lateral eliminada');
+                                      }
+                                    });
+                                  },
                                 ),
-                                GestureDetector(
-                                  onTap: () => _mostrarOpcionesFoto('interior'),
-                                  child: CameraWidget(
-                                    vehiculoId: widget.vehiculoId,
-                                    tipoFoto: 'interior',
-                                    onFotoSubida: (url) {
-                                      mantenimientoController.agregarFoto(
-                                        'interior',
-                                        url,
-                                      );
-                                    },
-                                  ),
+                                CameraWidget(
+                                  vehiculoId: widget.vehiculoId,
+                                  tipoFoto: 'interior',
+                                  onFotoCapturada: (File? foto) {
+                                    setState(() {
+                                      if (foto != null) {
+                                        _fotosCapturadas['interior'] = foto;
+                                        print('📸 Foto interior capturada');
+                                      } else {
+                                        _fotosCapturadas.remove('interior');
+                                        print('🗑️ Foto interior eliminada');
+                                      }
+                                    });
+                                  },
                                 ),
                               ],
                             ),
@@ -321,23 +373,39 @@ class _MantenimientoScreenState extends State<MantenimientoScreen> {
                             Center(
                               child: ElevatedButton(
                                 onPressed: () async {
-                                  await mantenimientoController
-                                      .guardarMantenimiento(
-                                        widget.vehiculoId,
-                                        observacionAdicional:
-                                            _observacionesController.text
-                                                .trim(),
-                                      );
-                                  if (mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Mantenimiento enviado al mecánico',
+                                  try {
+                                    await mantenimientoController
+                                        .guardarMantenimientoConFotos(
+                                          widget.vehiculoId,
+                                          fotosCapturadas: _fotosCapturadas,
+                                          observacionAdicional:
+                                              _observacionesController.text
+                                                  .trim(),
+                                        );
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Mantenimiento guardado exitosamente${_fotosCapturadas.isNotEmpty ? " con ${_fotosCapturadas.length} foto(s)" : ""}',
+                                          ),
+                                          backgroundColor: AppColors.exito,
                                         ),
-                                        backgroundColor: AppColors.exito,
-                                      ),
-                                    );
-                                    Navigator.pop(context);
+                                      );
+                                      Navigator.pop(context);
+                                    }
+                                  } catch (e) {
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text('Error al guardar: $e'),
+                                          backgroundColor: AppColors.error,
+                                        ),
+                                      );
+                                    }
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -370,9 +438,5 @@ class _MantenimientoScreenState extends State<MantenimientoScreen> {
         },
       ),
     );
-  }
-
-  void _mostrarOpcionesFoto(String tipoFoto) {
-    // El FotoWidget ya maneja las opciones
   }
 }

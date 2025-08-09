@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants/app_colors.dart';
@@ -26,6 +27,9 @@ class _MecanicoMantenimientoScreenState
       TextEditingController();
   late MantenimientoController _controller;
   bool _guardando = false;
+
+  // Mapa para manejar fotos capturadas en memoria
+  final Map<String, File> _fotosCapturadas = {};
 
   @override
   void initState() {
@@ -337,30 +341,59 @@ class _MecanicoMantenimientoScreenState
             CameraWidget(
               vehiculoId: widget.vehiculo.id,
               tipoFoto: 'mantenimiento',
+              onFotoCapturada: (File? foto) {
+                // Manejar foto capturada
+                setState(() {
+                  if (foto != null) {
+                    _fotosCapturadas['mantenimiento'] = foto;
+                    print('📸 Foto capturada y guardada en memoria');
+                  } else {
+                    _fotosCapturadas.remove('mantenimiento');
+                    print('🗑️ Foto eliminada de memoria');
+                  }
+                });
+              },
             ),
 
             const SizedBox(height: 12),
 
-            // Información sobre fotos temporales
+            // Indicador de fotos capturadas
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
+                color: _fotosCapturadas.isNotEmpty
+                    ? AppColors.exito.withOpacity(0.1)
+                    : Colors.blue.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                border: Border.all(
+                  color: _fotosCapturadas.isNotEmpty
+                      ? AppColors.exito.withOpacity(0.3)
+                      : Colors.blue.withOpacity(0.3),
+                ),
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.info_outline,
-                    color: Colors.lightBlue,
+                  Icon(
+                    _fotosCapturadas.isNotEmpty
+                        ? Icons.photo_camera
+                        : Icons.info_outline,
+                    color: _fotosCapturadas.isNotEmpty
+                        ? AppColors.exito
+                        : Colors.lightBlue,
                     size: 20,
                   ),
                   const SizedBox(width: 8),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Las fotos se guardan temporalmente hasta que se complete el mantenimiento.',
-                      style: TextStyle(color: Colors.lightBlue, fontSize: 12),
+                      _fotosCapturadas.isNotEmpty
+                          ? '${_fotosCapturadas.length} foto(s) capturada(s) - Se guardarán al confirmar'
+                          : 'Las fotos se guardan temporalmente hasta que se complete el mantenimiento.',
+                      style: TextStyle(
+                        color: _fotosCapturadas.isNotEmpty
+                            ? AppColors.exito
+                            : Colors.lightBlue,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ],
@@ -491,9 +524,10 @@ class _MecanicoMantenimientoScreenState
     });
 
     try {
-      // Guardar mantenimiento con observaciones adicionales
-      await controller.guardarMantenimiento(
+      // Guardar mantenimiento con fotos capturadas
+      await controller.guardarMantenimientoConFotos(
         widget.vehiculo.id,
+        fotosCapturadas: _fotosCapturadas,
         observacionAdicional: _observacionesController.text.trim(),
       );
 

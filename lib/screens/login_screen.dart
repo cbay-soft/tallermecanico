@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../controllers/auth_controller.dart';
 import '../constants/app_colors.dart';
+import '../services/router_service.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -65,7 +66,8 @@ class LoginScreen extends StatelessWidget {
                   passwordController.text.trim(),
                 );
                 if (user != null && context.mounted) {
-                  Navigator.pushReplacementNamed(context, '/menu');
+                  // Navegar según el rol del usuario
+                  await RouterService.navegarSegunRol(context);
                 } else {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(

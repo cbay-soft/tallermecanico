@@ -54,7 +54,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  // ✅ Sección de búsqueda
+                  // Sección de búsqueda
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -134,7 +134,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
                   
                   const SizedBox(height: 20),
                   
-                  // ✅ Estado actual
+                  // Estado actual
                   Text(
                     'Total de clientes: ${controller.clientes.length}',
                     style: const TextStyle(
@@ -146,7 +146,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
                   
                   const SizedBox(height: 10),
                   
-                  // ✅ Lista de clientes
+                  // Lista de clientes
                   Expanded(
                     child: controller.cargando
                         ? const Center(
@@ -301,7 +301,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // ✅ Título
+                // Título
                 Row(
                   children: [
                     const Icon(
@@ -311,7 +311,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
                     ),
                     const SizedBox(width: 12),
                     const Text(
-                      'INFORMACIÓN DEL CLIENTE',
+                      'INFORMACIÓN - CLIENTE',
                       style: TextStyle(
                         color: AppColors.textoEtiqueta,
                         fontWeight: FontWeight.bold,
@@ -331,7 +331,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
                 
                 const SizedBox(height: 24),
                 
-                // ✅ Botón expediente
+                // Botón expediente
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
@@ -351,7 +351,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
                 
                 const SizedBox(height: 12),
                 
-                // ✅ Botón cerrar
+                // Botón cerrar
                 SizedBox(
                   width: double.infinity,
                   child: TextButton(

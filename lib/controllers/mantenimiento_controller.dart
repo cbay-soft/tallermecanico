@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../services/firebase_service.dart';
 import '../services/fotos_service.dart';
@@ -41,7 +42,7 @@ class MantenimientoController with ChangeNotifier {
       }
     });
 
-    // ✅ Usar PostFrameCallback para evitar setState durante build
+    // Usar PostFrameCallback para evitar setState durante build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       notifyListeners();
     });
@@ -74,13 +75,13 @@ class MantenimientoController with ChangeNotifier {
     notifyListeners();
   }
 
-  // ✅ AGREGAR foto con tipo específico
+  // AGREGAR foto con tipo específico
   void agregarFoto(String tipoFoto, String url) {
     fotos[tipoFoto] = url;
     notifyListeners();
   }
 
-  // ✅ OBTENER URL de foto específica
+  // OBTENER URL de foto específica
   String? obtenerUrlFoto(String tipoFoto) {
     return fotos[tipoFoto];
   }
@@ -117,7 +118,7 @@ class MantenimientoController with ChangeNotifier {
           .where((e) => e.isNotEmpty)
           .toList();
 
-      // ✅ AGREGAR la observación adicional si existe
+      // AGREGAR la observación adicional si existe
       if (observacionAdicional != null &&
           observacionAdicional.trim().isNotEmpty) {
         todasLasObservaciones.add(observacionAdicional.trim());
@@ -126,7 +127,7 @@ class MantenimientoController with ChangeNotifier {
       final data = {
         'vehiculoId': vehiculoId,
         'observaciones': todasLasObservaciones,
-        'fotos': fotos, // ✅ GUARDAR URLs de fotos confirmadas
+        'fotos': fotos, // GUARDAR URLs de fotos confirmadas
         'fecha': DateTime.now().toIso8601String(),
         'checklistPlanificado': _checklist,
         'checklistRealizado': <String, Map<String, bool>>{},
@@ -146,6 +147,95 @@ class MantenimientoController with ChangeNotifier {
     }
   }
 
+  // Nuevo método para guardar mantenimiento con fotos capturadas
+  Future<void> guardarMantenimientoConFotos(
+    String vehiculoId, {
+    Map<String, File>? fotosCapturadas,
+    String? observacionAdicional,
+  }) async {
+    try {
+      print(
+        '💾 Iniciando guardado de mantenimiento con fotos capturadas para $vehiculoId',
+      );
+
+      // 📸 Guardar fotos capturadas en la galería
+      Map<String, String> fotosGuardadas = {};
+      if (fotosCapturadas != null && fotosCapturadas.isNotEmpty) {
+        print(
+          '🔄 Iniciando proceso de guardado de ${fotosCapturadas.length} fotos',
+        );
+
+        // Verificar que el servicio esté inicializado
+        await _fotosService.initialize();
+
+        fotosGuardadas = await _fotosService.guardarFotosMantenimiento(
+          fotosCapturadas,
+          vehiculoId,
+        );
+        print(
+          '📷 Resultado del guardado: ${fotosGuardadas.length} fotos guardadas',
+        );
+        print('📂 Rutas guardadas: $fotosGuardadas');
+      } else {
+        print('📷 No hay fotos para guardar');
+      }
+
+      // Actualizar el mapa de fotos con las rutas finales
+      fotos.addAll(fotosGuardadas);
+
+      // Obtener resumen del checklist
+      final resumen = getResumenChecklist();
+
+      // Determinar estado del mantenimiento basado en el checklist
+      String estadoMantenimiento;
+      if (resumen['porcentaje'] == 0) {
+        estadoMantenimiento = 'pendiente';
+      } else if (resumen['porcentaje'] == 100) {
+        estadoMantenimiento = 'completado';
+      } else {
+        estadoMantenimiento = 'en_proceso';
+      }
+
+      // Crear lista de observaciones
+      List<String> todasLasObservaciones = observaciones
+          .map((e) => e.text.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+
+      // Agregar la observación adicional si existe
+      if (observacionAdicional != null &&
+          observacionAdicional.trim().isNotEmpty) {
+        todasLasObservaciones.add(observacionAdicional.trim());
+      }
+
+      final data = {
+        'vehiculoId': vehiculoId,
+        'observaciones': todasLasObservaciones,
+        'fotos': fotosGuardadas, // Guardar rutas de fotos en galería
+        'fecha': DateTime.now().toIso8601String(),
+        'checklistPlanificado': _checklist, // ✅ RESTAURADO: Guardar checklist
+        'checklistRealizado': <String, Map<String, bool>>{},
+        'resumenChecklist': resumen, // ✅ RESTAURADO: Guardar resumen
+        'estado': estadoMantenimiento,
+        'porcentajeCompletado':
+            resumen['porcentaje'], // ✅ RESTAURADO: Guardar porcentaje
+        'fechaCompletado': estadoMantenimiento == 'completado'
+            ? DateTime.now().toIso8601String()
+            : null,
+      };
+
+      final documentoId = await _service.registrarMantenimiento(data);
+
+      print('✅ Mantenimiento guardado con ID: $documentoId');
+      print('📷 Fotos incluidas: ${fotosGuardadas.keys.toList()}');
+      print('📋 Checklist incluido: ${_checklist.keys.toList()}');
+      print('📊 Porcentaje completado: ${resumen['porcentaje']}%');
+    } catch (e) {
+      print('❌ Error: $e');
+      throw Exception('Error al guardar mantenimiento: $e');
+    }
+  }
+
   @override
   void dispose() {
     for (var controller in observaciones) {
@@ -154,7 +244,7 @@ class MantenimientoController with ChangeNotifier {
     super.dispose();
   }
 
-  // ✅ Método para forzar inicialización del servicio de fotos
+  // Método para forzar inicialización del servicio de fotos
   Future<bool> forzarInicializacionFotos() async {
     try {
       await _fotosService.initialize();
@@ -166,7 +256,7 @@ class MantenimientoController with ChangeNotifier {
     }
   }
 
-  // ✅ Verificar estado del servicio de fotos
+  // Verificar estado del servicio de fotos
   bool get fotosListo => _fotosService.estaListo;
   String get estadoFotos => _fotosService.estado;
 

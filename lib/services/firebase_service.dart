@@ -51,10 +51,10 @@ class FirebaseService {
     try {
       final vehiculoId = mantenimiento['vehiculoId'] as String;
       
-      // ✅ Guardar mantenimiento
+      // Guardar mantenimiento
       final docRef = await _db.collection('mantenimientos').add(mantenimiento);
       
-      // ✅ Actualizar estado del vehículo usando las constantes
+      // Actualizar estado del vehículo usando las constantes
       String nuevoEstado;
       switch (mantenimiento['estado']) {
         case 'pendiente':

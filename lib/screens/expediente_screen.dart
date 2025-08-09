@@ -96,7 +96,7 @@ class _ExpedienteScreenState extends State<ExpedienteScreen> {
               ),
               const SizedBox(width: 12),
               const Text(
-                'INFORMACIÓN DEL CLIENTE',
+                'INFORMACIÓN - CLIENTE',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -330,7 +330,7 @@ class _ExpedienteScreenState extends State<ExpedienteScreen> {
         color: Colors.grey.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: const Row(
+      child: const Wrap(
         children: [
           Icon(
             Icons.info_outline,
@@ -340,6 +340,7 @@ class _ExpedienteScreenState extends State<ExpedienteScreen> {
           SizedBox(width: 12),
           Text(
             'No se ha realizado ningún mantenimiento',
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.grey,
               fontSize: 14,

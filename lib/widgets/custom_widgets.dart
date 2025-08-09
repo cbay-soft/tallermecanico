@@ -730,7 +730,7 @@ class CustomWidgets {
     return const _FloatingHandPointer();
   }
 
-  // ✅ WIDGET CLIENTE FLEXIBLE - Compatible con todos los casos
+  // WIDGET CLIENTE FLEXIBLE - Compatible con todos los casos
   static Widget buildClienteInfo(
     Cliente cliente, {
     bool mostrarNombre = true,
@@ -831,7 +831,7 @@ class CustomWidgets {
     );
   }
 
-  // ✅ WIDGET VEHÍCULO FLEXIBLE - Compatible con todos los casos
+  // WIDGET VEHÍCULO FLEXIBLE - Compatible con todos los casos
   static Widget buildVehiculoInfo(
     Vehiculo vehiculo, {
     bool mostrarPlaca = true,
@@ -999,7 +999,7 @@ class CustomWidgets {
     );
   }
 
-  // ✅ MÉTODOS AUXILIARES ESTÁTICOS
+  // MÉTODOS AUXILIARES ESTÁTICOS
   static Widget _buildCampoTexto(String texto, {bool esTitulo = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
@@ -1142,7 +1142,7 @@ class CustomWidgets {
   }
 }
 
-// ✅ CLASE SEPARADA PARA ANIMACIÓN
+// CLASE SEPARADA PARA ANIMACIÓN
 class _FloatingHandPointer extends StatefulWidget {
   const _FloatingHandPointer();
 

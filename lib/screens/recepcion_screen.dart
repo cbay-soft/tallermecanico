@@ -13,7 +13,7 @@ class RecepcionScreen extends StatelessWidget {
       create: (_) => RecepcionController(),
       child: Consumer<RecepcionController>(
         builder: (context, controller, _) {
-          // ✅ AGREGAR esta lógica para manejar el foco al cerrar modal
+          // AGREGAR esta lógica para manejar el foco al cerrar modal
           if (controller.debeOcultarTeclado) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               FocusScope.of(context).unfocus();
@@ -194,18 +194,18 @@ class RecepcionScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(
-                                width: 60, // ✅ Tamaño fijo para el Stack
-                                height: 60, // ✅ Tamaño fijo para el Stack
+                                width: 60,
+                                height: 60,
                                 child: Stack(
                                   clipBehavior: Clip.none,
                                   children: [
-                                    // ✅ Centrar el IconButton dentro del Stack
+                                    // Centrar el IconButton dentro del Stack
                                     Center(
                                       child: IconButton(
                                         icon: const Icon(
                                           Icons.add_circle_outline,
                                           color: AppColors.iconoPrincipal,
-                                          size: 28, // ✅ Tamaño específico
+                                          size: 28,
                                         ),
                                         onPressed: () {  
                                           if (controller.clienteEncontrado !=null) {
@@ -229,7 +229,7 @@ class RecepcionScreen extends StatelessWidget {
                                         },
                                       ),
                                     ),
-                                    // ✅ Mano flotante posicionada SOBRE el ícono (no lo desplaza)
+                                    // Mano flotante posicionada SOBRE el ícono (no lo desplaza)
                                     if (controller.vehiculosCliente.isEmpty)
                                       Positioned(
                                         top: 35,
@@ -299,7 +299,7 @@ class RecepcionScreen extends StatelessWidget {
                                       96,
                                       120,
                                       1,
-                                    ), // ✅ Blanco sobre fondo gris
+                                    ), // Blanco sobre fondo gris
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
                                     backgroundColor: AppColors.textoEtiqueta,
